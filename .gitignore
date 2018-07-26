@@ -3,7 +3,9 @@
 *.log
 *.m4
 configure
+Makefile
 Makefile.in
-preinst-env
+pre-inst-env
+build-aux/*
 resources/*
 *.cache/*
