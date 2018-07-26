@@ -1,0 +1,9 @@
+*~
+*.go
+*.log
+*.m4
+configure
+Makefile.in
+preinst-env
+resources/*
+*.cache/*
