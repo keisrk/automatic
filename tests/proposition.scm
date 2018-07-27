@@ -85,6 +85,27 @@
 ;;    x1 -x2
 ;;-x0    -x2
 ;; x0
-(display (l-cls->l-brnf '(1 0 1)))(newline)
-(display (l-cls->l-brnf '(0 1 #f 0 1)))(newline)
+(test-equal
+ "term-substitution id"
+ (term-substitution #(1 0 1) (lambda (i) 'Not_Found))
+ '(#(1 0 1)))
+
+(test-equal
+ "substitution id"
+ (substitution '(#(0 0 1 0 1)
+                 #(0 1 1 0 1)
+                 #(1 1 1 0 0))
+               (lambda (i) 'Not_Found))
+ '(#(0 0 1 0 1)
+   #(0 1 1 0 1)
+   #(1 1 1 0 0)))
+
+(display (cls->brnf #(1 0 1)))(newline)
+(display (cls->brnf #(0 1 #f 0 1)))(newline)
+(display (dnf->brnf '(#(0 1 #f 0 1)
+                      #(#f 0 1 0 1))))(newline)
+
+(display (make-term 4)) (newline)
+(display (make-singleton-term 4 1)) (newline)
+(display (brnf-multiplication '(#(1 0 1)) #nil)) (newline)
 (test-end)

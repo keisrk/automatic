@@ -22,7 +22,19 @@
             dnf-conjunction
             dnf-negation-wrt
 
-            l-cls->l-brnf
+            make-term
+            make-singleton-term
+
+            term<
+            term-multiplication
+            term-brnf-xor
+            brnf-multiplication
+            brnf-xor
+
+            cls->brnf
+            dnf->brnf
+            term-substitution
+            substitution
             ))
 
 (define (insert e< e l)
@@ -160,6 +172,10 @@
            (cls-negation cls)
            dnf-conjunction))
 
+;; BRNF
+;; term = 1 iff term = #(0 0 ... 0)
+;; brnf = {}
+
 (define (make-term size)
   ;; size = 3 then #(0 0 0)
   (make-vector size 0))
@@ -188,7 +204,7 @@
          ((0 . l') (append (l-cls->l-brnf (cons #f l'))
                            (l-cls->l-brnf (cons 1 l'))))))
 
-(define (term-multplication term term')
+(define (term-multiplication term term')
   ;; term * term
   (vector-map (lambda (i v v') (max v v')) term term'))
 
@@ -196,5 +212,54 @@
   ;;
   (receive (same brnf')
            (partition (lambda (x) (equal? x term)) brnf)
-           (if (odd? (length same)) (insert term< term brnf')
+           (if (even? (length same)) (insert term< term brnf')
                brnf')))
+
+(define (brnf-multiplication brnf brnf')
+  ;; brnf * brnf'
+  (match (cons brnf brnf')
+         ((#nil . _) brnf')
+         ((_ . #nil) brnf)
+         (_ (fold-ec #nil
+                     (: term brnf)
+                     (: term' brnf')
+                     (term-multiplication term term')
+                     term-brnf-xor))))
+
+(define (brnf-xor brnf brnf')
+  ;; brnf + brnf'
+  (fold-ec brnf
+           (: term brnf')
+           term
+           term-brnf-xor))
+
+(define (cls->brnf cls)
+  ;;
+  (let* ((l-cls (vector->list cls))
+         (l-brnf (l-cls->l-brnf l-cls)))
+    (fold (lambda (l' acc) (term-brnf-xor (list->vector l') acc)) #nil l-brnf)))
+
+(define (dnf->brnf dnf)
+  ;;
+  (match dnf
+         (#nil #nil)
+         ((cls . dnf') (let* ((brnf-l (cls->brnf cls))
+                              (brnf-r (dnf->brnf dnf'))
+                              (brnf-c (brnf-multiplication brnf-l brnf-r)))
+                         (brnf-xor (brnf-xor brnf-l brnf-r) brnf-c)))))
+
+(define (term-substitution term sigma)
+  ;;
+  (vector-fold
+   (lambda (i acc v)
+     (case v
+       ((0) acc)
+       ((1) (match (sigma i)
+                 ('Not_Found (brnf-multiplication (list (make-singleton-term (vector-length term) i)) acc))
+                 (brnf (brnf-multiplication brnf acc))))
+       ))
+   #nil term))
+
+(define (substitution brnf sigma)
+  ;;
+  (fold (lambda (term acc) (brnf-xor (term-substitution term sigma) acc)) #nil brnf))
