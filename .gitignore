@@ -1,5 +1,6 @@
 *~
 *.go
+*.trs
 *.log
 *.m4
 configure
