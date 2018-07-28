@@ -6,6 +6,7 @@
   #:use-module (ice-9 receive)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-42)
+  #:use-module (srfi srfi-43)
   #:export (magenta
             cyan
             orange
@@ -212,12 +213,18 @@
                 (format #f "~a~d" 'X var))))
 
 (define (diagram-term diagram term)
-  ;; term : int list
+  ;; term : {0, 1}^*, boolean vector
   ;; Only handle Path step
   (let* ((endpoint (diagram-rightbottom diagram))
          (path-seq
-          (list-ec (: var term)
-                   (diagram-var diagram var)))
+          (vector-fold (lambda (i acc v)
+                         (case v
+                           ((0) acc)
+                           ((1) (cons (diagram-var diagram i) acc))))
+                       #nil term)
+          ;;          (list-ec (: var term)
+          ;;                   (diagram-var diagram var))
+          )
          (fillall  (diagram-bound diagram)))
     (diagram-clip diagram path-seq)
     (diagram-path diagram fillall)))

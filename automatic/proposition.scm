@@ -46,11 +46,11 @@
                             (if (e< e e') (cons e l)
                                 (cons e' (insert e< e l')))))))
 
-;; DNF Methods
+;; DNF
 ;; lit := 0 | 1 | #f 
 ;; cls := lit vec
 ;; dnf := cls list
-;; cls = #(0 1 #f 1)
+;; e.g., cls = #(0 1 #f 1)
 ;; cls = True iff cls = #(#f, #f, ..., #f)
 ;; dnf = {
 ;;        #(#f, #f), #(#f, 0), #(#f, 1),
@@ -228,10 +228,10 @@
 
 (define (brnf-xor brnf brnf')
   ;; brnf + brnf'
-  (fold-ec brnf
-           (: term brnf')
-           term
-           term-brnf-xor))
+  (match (cons brnf brnf')
+         ((#nil . _) brnf')
+         ((_ . #nil) brnf)
+         (_ (fold term-brnf-xor brnf brnf'))))
 
 (define (cls->brnf cls)
   ;;
@@ -243,6 +243,7 @@
   ;;
   (match dnf
          (#nil #nil)
+         ((cls . #nil) (cls->brnf cls))
          ((cls . dnf') (let* ((brnf-l (cls->brnf cls))
                               (brnf-r (dnf->brnf dnf'))
                               (brnf-c (brnf-multiplication brnf-l brnf-r)))
