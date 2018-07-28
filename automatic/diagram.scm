@@ -7,12 +7,18 @@
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-42)
   #:use-module (srfi srfi-43)
-  #:export (magenta
+  #:export (
+            ;; Constants
+            magenta
             cyan
             orange
             light-green
+
+            ;; Methods for 2D Point            
             point-plus
             point-mult
+
+            ;; Methods of cairo-XXX context
             <diagram>
             diagram-surf
             diagram-context
@@ -34,14 +40,14 @@
             draw-diagram
             ))
 
-;; Constant
+;; Constants
 (define pi 3.141592654)
 (define magenta '(1.0 0.0 1.0))
 (define cyan '(0.0 1.0 1.0))
 (define orange '(1.0 0.5 0.0))
 (define light-green '(0.0 0.5 0.0))
 
-;; 2D Point
+;; Methods for 2D Point
 (define (point-plus p1 p2)
   ;; Addition
   (cons (+ (car p1) (car p2))

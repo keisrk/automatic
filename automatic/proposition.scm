@@ -6,15 +6,15 @@
   #:use-module (srfi srfi-42)
   #:use-module (srfi srfi-43)
   #:export (
+            ;; Utilities
             insert
 
+            ;; Methods for DNF 
             make-cls
             make-singleton-cls
-
             cls<
             cls-conflict?
             cls-deducible?
-
             cls-dnf-union
             cls-negation
             dnf-simplify
@@ -22,20 +22,23 @@
             dnf-conjunction
             dnf-negation-wrt
 
+            ;; Methods for BRNF
             make-term
             make-singleton-term
-
             term<
             term-multiplication
             term-brnf-xor
+            term-substitution
             brnf-multiplication
             brnf-xor
+            substitution
 
+            ;; Methods for DNF -> BRNF conversion
             cls->brnf
             dnf->brnf
-            term-substitution
-            substitution
             ))
+
+;; Utilities
 
 (define (insert e< e l)
   ;; e< :: 'a -> 'a -> bool
@@ -46,7 +49,7 @@
                             (if (e< e e') (cons e l)
                                 (cons e' (insert e< e l')))))))
 
-;; DNF
+;; Methods for DNF 
 ;; lit := 0 | 1 | #f 
 ;; cls := lit vec
 ;; dnf := cls list
@@ -172,7 +175,7 @@
            (cls-negation cls)
            dnf-conjunction))
 
-;; BRNF
+;; Methods for BRNF
 ;; term = 1 iff term = #(0 0 ... 0)
 ;; brnf = {}
 
@@ -194,15 +197,6 @@
             ('init (if (equal? v v') 'init (< v v')))
             (x x)))
    'init term term'))
-
-(define (l-cls->l-brnf l-cls)
-  ;;
-  (match l-cls
-         (#nil '(#nil))
-         ((#f . l') (map (lambda (x) (cons 0 x)) (l-cls->l-brnf l')))
-         ((1 . l') (map (lambda (x) (cons 1 x)) (l-cls->l-brnf l')))
-         ((0 . l') (append (l-cls->l-brnf (cons #f l'))
-                           (l-cls->l-brnf (cons 1 l'))))))
 
 (define (term-multiplication term term')
   ;; term * term
@@ -233,22 +227,6 @@
          ((_ . #nil) brnf)
          (_ (fold term-brnf-xor brnf brnf'))))
 
-(define (cls->brnf cls)
-  ;;
-  (let* ((l-cls (vector->list cls))
-         (l-brnf (l-cls->l-brnf l-cls)))
-    (fold (lambda (l' acc) (term-brnf-xor (list->vector l') acc)) #nil l-brnf)))
-
-(define (dnf->brnf dnf)
-  ;;
-  (match dnf
-         (#nil #nil)
-         ((cls . #nil) (cls->brnf cls))
-         ((cls . dnf') (let* ((brnf-l (cls->brnf cls))
-                              (brnf-r (dnf->brnf dnf'))
-                              (brnf-c (brnf-multiplication brnf-l brnf-r)))
-                         (brnf-xor (brnf-xor brnf-l brnf-r) brnf-c)))))
-
 (define (term-substitution term sigma)
   ;;
   (vector-fold
@@ -264,3 +242,30 @@
 (define (substitution brnf sigma)
   ;;
   (fold (lambda (term acc) (brnf-xor (term-substitution term sigma) acc)) #nil brnf))
+
+;; Methods for DNF -> BRNF conversion
+
+(define (l-cls->l-brnf l-cls)
+  ;;
+  (match l-cls
+         (#nil '(#nil))
+         ((#f . l') (map (lambda (x) (cons 0 x)) (l-cls->l-brnf l')))
+         ((1 . l') (map (lambda (x) (cons 1 x)) (l-cls->l-brnf l')))
+         ((0 . l') (append (l-cls->l-brnf (cons #f l'))
+                           (l-cls->l-brnf (cons 1 l'))))))
+
+(define (cls->brnf cls)
+  ;;
+  (let* ((l-cls (vector->list cls))
+         (l-brnf (l-cls->l-brnf l-cls)))
+    (fold (lambda (l' acc) (term-brnf-xor (list->vector l') acc)) #nil l-brnf)))
+
+(define (dnf->brnf dnf)
+  ;;
+  (match dnf
+         (#nil #nil)
+         ((cls . #nil) (cls->brnf cls))
+         ((cls . dnf') (let* ((brnf-l (cls->brnf cls))
+                              (brnf-r (dnf->brnf dnf'))
+                              (brnf-c (brnf-multiplication brnf-l brnf-r)))
+                         (brnf-xor (brnf-xor brnf-l brnf-r) brnf-c)))))

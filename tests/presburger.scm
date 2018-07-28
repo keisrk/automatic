@@ -25,8 +25,7 @@
 (let ((coeffs '((x . 1) (y . 2) (z . 3)))
       (const 8))
   (display
-   (stream-car
-    (equation->dfa coeffs const)))
+   (equation->st8-dlt (cons coeffs const)))
   (newline))
 
 (test-end)

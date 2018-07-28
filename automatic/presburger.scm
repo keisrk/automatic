@@ -15,8 +15,10 @@
             assign-succ
             make-assign-stream
             make-trans-stream
-            make-equation->dfa
-            equation->dfa
+            make-equation->st8-dlt
+            equation->st8-dlt
+            equation->init-fin
+            equation->alphabet
             ))
 
 ;; Variables are given as a list of symbols 'x 'y 'z ...
@@ -110,46 +112,57 @@
 
 (define-stream (make-trans-stream coeffs q)
   ;;
-  (stream-of (vector q c p)
+  (stream-of (cons (cons q c) p)
            (a in (make-assign-stream coeffs))
            (c is (list->vector (map cdr a)))
            (p' is (assign-evaluate coeffs q a))
            (p is (if (even? p') (half p') #f))))
 
-(define-stream (make-equation->dfa coeffs init-strm)
+(define-stream (make-equation->st8-dlt coeffs init-strm)
   ;;
   (stream-let loop ((todo-strm init-strm)
-                    (st8s (make-q))
-                    (trns (make-q)))
+                    (st8 (make-q))
+                    (dlt (make-q)))
               (stream-match
                todo-strm
-               (() (stream-of (cons (car st8s) (car trns))))
-               ((head . strm)
-                (match head
+               (() (stream-of (cons (car st8) (car dlt))))
+               ((x . strm)
+                (match x
                        ((? integer? init)
                         (loop (make-trans-stream coeffs init)
-                              (q-dedup-push! st8s init)
-                              trns))
-                       (#(q  _ #f)
+                              (q-dedup-push! st8 init)
+                              dlt))
+                       (((q . _) . #f)
                         (loop strm
-                              st8s
-                              (q-dedup-push! trns head)))
+                              st8
+                              (q-dedup-push! dlt x)))
 
-                       (#(q  _  p)
-                        (if (q-member? p st8s)
+                       (((q . _) . p)
+                        (if (q-member? p st8)
                             (loop strm
-                                  st8s
-                                  (q-dedup-push! trns head))
+                                  st8
+                                  (q-dedup-push! dlt x))
                             (loop (stream-append strm (make-trans-stream coeffs p))
-                                  (q-dedup-push! st8s p)
-                                  (q-dedup-push! trns head)))))))))
+                                  (q-dedup-push! st8 p)
+                                  (q-dedup-push! dlt x)))))))))
 
-(define (equation->dfa coeffs const)
+(define (equation->st8-dlt equation)
   ;;
-  (make-equation->dfa coeffs (stream-of const)))
+  (match
+   equation
+   ((coeffs . const) (stream-match
+                      (make-equation->st8-dlt coeffs (stream-of const))
+                      ((x . _) x)))))
 
+(define (equation->init-fin equation)
+  ;; Conventionally the initial state is constant and final is 0.
+  (match
+   equation
+   ((coeffs . const) (cons const 0))))
 
-(define (assign->alphabet assign vars)
-  ;; : (symbol . int) alist -> symbol list -> int vector
-  (list->vector (map (lambda (v) (assoc-ref assign v)) vars)))
+(define (equation->alphabet equation)
+  ;;
+  (match
+   equation
+   ((coeffs . const) (list->vector (map car coeffs)))))
 

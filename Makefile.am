@@ -2,13 +2,15 @@ SOURCES =                     \
   automatic.scm               \
   automatic/proposition.scm   \
   automatic/diagram.scm       \
-  automatic/presburger.scm
+  automatic/presburger.scm    \
+  automatic/afa.scm   
 
 TESTS =                       \
   tests/automatic.scm         \
   tests/proposition.scm       \
   tests/diagram.scm           \
-  tests/presburger.scm
+  tests/presburger.scm        \
+  tests/afa.scm
 
 TEST_EXTENSIONS = .scm
 
