@@ -22,6 +22,12 @@
             make-afa-dest-cls-noninit
             make-afa-dest-noninit
             make-afa-dlt-noninit
+            make-afa-dest-cls-init
+            make-afa-dest-init
+            make-afa-dlt-init
+
+            ;; Methods
+            afa-dlt->afa-brnf-dlt
             ))
 
 ;; Methods for numbers in  binary.
@@ -119,3 +125,48 @@
                          (make-afa-dest-noninit afa-orig be-st8-bin be-orig-dest-al))))
            cons))
 
+(define (make-afa-dest-cls-init afa-dlt-non-init be-final c vars)
+  ;; When vars = {x0 x1 x2} then vars(size) = 3.
+  ;; be-final: q0 = #(1 0 1 1), final state of DFA. 
+  ;; assign: 0 -> 1, 1 -> 0, 2 -> 1, 3 -> 1
+  ;; delta:  0 --c-> P0, 1 --c-> P1, 2 --c-> P2, 3 --c-> P3
+  ;; c : one of the alphabet
+  ;; (1 * P0) /\ (0 * P1) /\ (1 * P2) /\ (1 * P3)
+  ;; Pn are all in DNF.
+  (vector-fold
+   (lambda (i acc assign)
+     (match (assoc-ref afa-dlt-non-init (cons i c))
+            (#f acc)
+            (afa-dest
+             (dnf-conjunction
+              (case assign
+                ((0) (dnf-negation-wrt vars afa-dest))
+                ((1) afa-dest)) acc))))
+   (list (make-cls vars)) be-final))
+
+(define (make-afa-dest-init afa-dlt-non-init be-finalst8-bin c vars)
+  ;; be-finalst8-bin: binary numbers list of finals.
+  (fold-ec #nil
+           (: be-final be-finalst8-bin)
+           (make-afa-dest-cls-init afa-dlt-non-init be-final c vars)
+           dnf-union))
+
+(define (make-afa-dlt-init afa-init afa-dlt-non-init be-finalst8-bin sigma vars)
+  ;;
+  (list-ec (: c sigma)
+           (:let dest (make-afa-dest-init afa-dlt-non-init be-finalst8-bin c vars))
+           (cons (cons afa-init c) dest)))
+
+(define (afa-dlt->afa-brnf-dlt afa-dlt)
+  ;; 
+  (map (lambda (afa-trans)
+         (match afa-trans
+                ((orig-c . dnf) (cons orig-c (dnf->brnf dnf)))))
+       afa-dlt))
+
+(define (afa-brnf-transition a br c)
+  (assoc-ref (dfa-delta a) (cons q c)))
+
+(define (afa-brnf-run a q w)
+  (fold (lambda (c acc)
+          (cons (dfa-transition a (car acc) c) acc)) (list q) w))
