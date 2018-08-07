@@ -28,14 +28,16 @@
 
             ;; Methods
             afa-dlt->afa-brnf-dlt
+            afa-brnf-transition
+            afa-brnf-run
             ))
 
 ;; Methods for numbers in  binary.
-
 (define (binary-length n)
-  ;; n: decimal number
-  ;; Suppose state set has index from 0 to n. (binary-length n) returns sufficient
-  ;; number of binarys to cover the index range, i.e. n := length - 1.
+  "n: decimal number
+Suppose state set has index from 0 to n. (binary-length n)
+returns sufficient number of binarys to cover the index range, i.e. 
+n := length- 1."
   (if (or (equal? n 0)
           (equal? n 1))
       1
@@ -68,7 +70,6 @@
             (binary-range (+ 1 m) n))))
 
 ;; Methods for binary encoding.
-
 (define (bin-enc-st8 dfa-st8 dfa-init)
   ;; (bin-enc-st8 '(q0 q1 q2 q3 q4 q5 q6 q7) 'q3)
   ;; ((q3 . #(0 0 0)) (q0 . #(1 0 0)) (q1 . #(0 1 0)) (q2 . #(1 1 0))
@@ -164,9 +165,18 @@
                 ((orig-c . dnf) (cons orig-c (dnf->brnf dnf)))))
        afa-dlt))
 
-(define (afa-brnf-transition a br c)
-  (assoc-ref (dfa-delta a) (cons q c)))
+;; Transition for AFA is just a substitution.
+;; We assume each record of afa delta is in BRNF.
+;; No matching is sent to Btm, #nil
+(define (afa-brnf-transition afa-br-dlt brnf c)
+  ;;
+  (let ((sbst (lambda (orig)
+                (match (assoc-ref afa-br-dlt (cons orig c))
+                       (#f 'Not_Found)
+                       (b b)))))
+    (substitute brnf sbst)))
 
-(define (afa-brnf-run a q w)
+(define (afa-brnf-run afa-br-dlt brnf w)
+  ;;
   (fold (lambda (c acc)
-          (cons (dfa-transition a (car acc) c) acc)) (list q) w))
+          (cons (afa-brnf-transition afa-br-dlt (car acc) c) acc)) (list brnf) w))

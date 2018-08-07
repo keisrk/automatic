@@ -38,7 +38,7 @@
 ;;       (#(1 0 0) . #(0 1 0))
 ;;       (#(0 0 0) . #(1 0 0)))))
 
-(newline)(display "make-afa-dlt-noninit") (newline)
+(newline)(display "make-afa-dlt-noninit")(newline)
 
 (display
  (make-afa-dlt-noninit
