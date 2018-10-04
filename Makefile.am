@@ -3,14 +3,18 @@ SOURCES =                     \
   automatic/proposition.scm   \
   automatic/diagram.scm       \
   automatic/presburger.scm    \
-  automatic/afa.scm   
+  automatic/dfa.scm           \
+  automatic/afa.scm           \
+  automatic/graph.scm
 
 TESTS =                       \
   tests/automatic.scm         \
   tests/proposition.scm       \
   tests/diagram.scm           \
   tests/presburger.scm        \
-  tests/afa.scm
+  tests/dfa.scm               \
+  tests/afa.scm               \
+  tests/graph.scm
 
 TEST_EXTENSIONS = .scm
 

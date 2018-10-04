@@ -165,6 +165,12 @@ n := length- 1."
                 ((orig-c . dnf) (cons orig-c (dnf->brnf dnf)))))
        afa-dlt))
 
+(define (afa-preamble port init)
+  "preamble for AFA, required by (automatic graph)."
+  (format port "node[shape=none];~&")
+  (format port "\"#entry#\"[shape=none label=\"\"];~&")
+  (format port "\"#entry#\"->\"~d\"~&" init))
+
 ;; Transition for AFA is just a substitution.
 ;; We assume each record of afa delta is in BRNF.
 ;; No matching is sent to Btm, #nil
@@ -174,7 +180,7 @@ n := length- 1."
                 (match (assoc-ref afa-br-dlt (cons orig c))
                        (#f 'Not_Found)
                        (b b)))))
-    (substitute brnf sbst)))
+    (substitution brnf sbst)))
 
 (define (afa-brnf-run afa-br-dlt brnf w)
   ;;

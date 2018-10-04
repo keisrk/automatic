@@ -2,34 +2,35 @@
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-9)
-  #:export (<dfa>
-            make-dfa
-            dfa-sigma
-            dfa-states
-            dfa-init
-            dfa-final
-            dfa-delta
+  #:export (dfa-deterministic?
+            dfa-preamble
             dfa-transition
             dfa-run))
 
-(define-record-type <dfa>
-  ;; sigma: symbol -> {0, 1}
-  ;; In stead of all mappings, it suffices to hold just symbols x, y, z, ...
-  ;; states: int list
-  ;; init, final: int
-  ;; delta: ((int . int vector) . int) alist
-  (make-dfa sigma states init final delta)
-  dfa?
-  (sigma     dfa-sigma)
-  (states    dfa-states)
-  (init      dfa-init)  
-  (final     dfa-final)  
-  (delta     dfa-delta))
+;; DFA is a 5 tuple of
+;; st8: int
+;; init <- st8 / final <- st8
+;; sigma: c list
+;; dlt: (st8 * c) * st8
+;; The use of srfi-9 Record seems somewhat overkill.
 
-(define (dfa-transition a q c)
-  (assoc-ref (dfa-delta a) (cons q c)))
+(define (dfa-deterministic? dlt)
+  "test if dlt is deterministic"
+  (fold (lambda (trans acc) (and #t acc)) #t dlt))
 
-(define (dfa-run a q w)
+(define (dfa-preamble port init final)
+  "preamble for DFA, required by (automatic graph)."
+  (format port "edge[fontname=Courier];~&")
+  (format port "node[shape=circle];~&")
+  (format port "\"#entry#\"[shape=none label=\"\"];~&")
+  (format port "\"~d\"[shape=doublecircle];~&" final)
+  (format port "\"#entry#\"->\"~d\"~&" init))
+
+(define (dfa-transition dlt q c)
+  "DFA transition function, assuming deterministic"
+  (assoc-ref dlt (cons q c)))
+
+(define (dfa-run dlt q w)
+  "DFA run function"
   (fold (lambda (c acc)
-          (cons (dfa-transition a (car acc) c) acc)) (list q) w))
+          (cons (dfa-transition dlt (car acc) c) acc)) (list q) w))
