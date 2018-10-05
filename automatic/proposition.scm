@@ -1,4 +1,5 @@
 (define-module (automatic proposition)
+  #:use-module (automatic utils)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (ice-9 receive)
@@ -6,9 +7,6 @@
   #:use-module (srfi srfi-42)
   #:use-module (srfi srfi-43)
   #:export (
-            ;; Utilities
-            insert
-
             ;; Methods for DNF 
             make-cls
             make-singleton-cls
@@ -37,17 +35,6 @@
             cls->brnf
             dnf->brnf
             ))
-
-;; Utilities
-
-(define (insert e< e l)
-  ;; e< :: 'a -> 'a -> bool
-  ;; insertion sort
-  (match l
-         (#nil (list e))
-         ((e' . l') (if (equal? e e') l
-                            (if (e< e e') (cons e l)
-                                (cons e' (insert e< e l')))))))
 
 ;; Methods for DNF 
 ;; lit := 0 | 1 | #f 

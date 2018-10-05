@@ -18,7 +18,7 @@
   "test if dlt is deterministic"
   (fold (lambda (trans acc) (and #t acc)) #t dlt))
 
-(define (dfa-preamble port init final)
+(define (dfa-preamble port init final st8)
   "preamble for DFA, required by (automatic graph)."
   (format port "edge[fontname=Courier];~&")
   (format port "node[shape=circle];~&")

@@ -1,4 +1,5 @@
 (define-module (automatic presburger)
+  #:use-module (automatic utils)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (ice-9 optargs)
@@ -10,12 +11,14 @@
   #:use-module (srfi srfi-42)          ;; Eager comprehensions
   #:export (
             equation?
+            vars
             assign-evaluate
             assign-init
             assign-succ
             make-assign-stream
             make-trans-stream
             make-equation->st8-dlt
+            equation->sigma
             equation->st8-dlt
             equation->init-fin
             equation->alphabet
@@ -30,12 +33,6 @@
 ;; coefficient: '((x . 1) (y . 2) (z . 3))
 ;; constant: 7
 
-(define (distinct? l)
-  ;; Check if the input list does not contain duplicating elements.
-  (match l
-         (#nil #t)
-         ((x . xs) (and (not (member x xs)) (distinct? xs)))))
-
 (define (coefficients? coeffs)
   ;; Check if the input is a list of collectly formatted coefficients.
   (and (distinct? (map car coeffs))
@@ -48,19 +45,8 @@
          (((? coefficients? coeffs) . (? integer? k)) #t)
          (_ #f)))
 
-(define (convolution w)
-  ;; (convolution '((x 1 1 1) (y 2 2 2) (z 3 3 3)))
-  ;; = (#(x y z) #(1 2 3) #(1 2 3) #(1 2 3))
-  (if (every null? w) #nil
-      (cons (list->vector (map car w))
-            (convolution (map cdr w)))))
-
-(define (convolution-ordered w vars)
-  ;; 2 inputs ((x . (1 1 1))(y . (2 2 2))(z . (3 3 3))) (y x z)
-  ;; = (#(y x z) #(2 1 3) #(2 1 3) #(2 1 3))
-  ;; Assume cdrs share the same length.
-  (let ((w-ord (map (lambda (v) (assoc-ref w v)) vars)))
-    (cons (list->vector vars) (convolution w-ord))))
+(define (vars equation)
+  (map car (car equation)))
 
 (define (assign-evaluate coeffs constant assign)
   ;; coeffs := '((x . 1) (y . 2) (z . 3))
@@ -92,14 +78,6 @@
 (define (half n)
   ;; Guile's verbose way to perform 'n / 2'
   (euclidean-quotient n 2))
-
-(define (q-member? e q)
-  ;;
-  (member e (car q)))
-
-(define (q-dedup-push! q e)
-  ;;
-  (if (q-member? e q) q (q-push! q e)))
 
 (define-stream (make-assign-stream coeffs)
   ;;
@@ -145,6 +123,16 @@
                             (loop (stream-append strm (make-trans-stream coeffs p))
                                   (q-dedup-push! st8 p)
                                   (q-dedup-push! dlt x)))))))))
+
+(define (equation->sigma equation)
+  ;;
+  (match
+   equation
+   ((coeffs . const)
+    (stream->list (stream-of
+                   c
+                   (a in (make-assign-stream coeffs))
+                   (c is (list->vector (map cdr a))))))))
 
 (define (equation->st8-dlt equation)
   ;;

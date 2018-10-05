@@ -1,4 +1,5 @@
-(use-modules (automatic proposition)
+(use-modules (automatic utils)
+             (automatic proposition)
              (srfi srfi-64))
 
 (test-begin "proposition")

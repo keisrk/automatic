@@ -1,38 +1,16 @@
 (define-module (automatic graph)
+  #:use-module (automatic utils)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-42)
   #:use-module (srfi srfi-43)
   #:export (
+            alphabet->string
+            table->string
             dlt-collect
             format-graph
-            )
-  )
-
-(define (table-ref table i j)
-  (vector-ref (vector-ref table i) j))
-
-;; Input
-;; #(#(0 1 2)
-;;   #(a b c)
-;;   #(s t u)
-;;   #(x y z))
-;; Output
-;; #(#(0 a s x)
-;;   #(1 b t y)
-;;   #(2 c y z))
-
-(define (transpose table)
-  (let ((rows    (vector-length (vector-ref table 0)))
-        (columns (vector-length table)))
-    (vector-unfold
-     (lambda (i)
-       (vector-unfold
-        (lambda (j)
-          (table-ref table j i))
-        columns))
-     rows)))
+            ))
 
 ;; Input
 ;; #(0 a s x)
@@ -52,6 +30,7 @@
 ;; """
 (define (alphabet->string a)
   (match a
+         (#f "#")
          ((? number? a) (number->string a))
          ((? symbol? s) (symbol->string s))))
 
@@ -79,12 +58,11 @@
 ;; Emit graphviz's dot format string.
 ;; preamble := (lambda (port init final) (format port
 ;; "node[shape=circle];~&"))
-(define (format-graph port init final dlt preamble)
+(define (format-graph port init final st8 dlt preamble)
   (format port "digraph G {~&")
-  (preamble port init final)
+  (preamble port init final st8)
   (do-ec (: trans dlt)
          (match trans
                 (((orig . dest) . c)
                  (format port "\"~a\"->\"~a\"[label=~s];~&" orig dest (table->string (transpose (list->vector c)))))))
-  (format port "~&}~&~!")
-)
+  (format port "~&}~&~!"))

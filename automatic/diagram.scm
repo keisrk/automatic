@@ -286,7 +286,6 @@
     (brnf '(#nil))
     (vars 3))
    (let ((diagram (new-diagram width height radius font-size span)))
-          ;;(bg (diagram-bound diagram)));;(list 'circle (diagram-center diagram) (+ (* radius 2) span))))
      ;; Initialize
      (diagram-init diagram vars)
      ;; Brnf

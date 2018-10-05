@@ -1,5 +1,6 @@
 SOURCES =                     \
   automatic.scm               \
+  automatic/utils.scm         \
   automatic/proposition.scm   \
   automatic/diagram.scm       \
   automatic/presburger.scm    \
@@ -9,6 +10,7 @@ SOURCES =                     \
 
 TESTS =                       \
   tests/automatic.scm         \
+  tests/utils.scm             \
   tests/proposition.scm       \
   tests/diagram.scm           \
   tests/presburger.scm        \

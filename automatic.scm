@@ -1,1 +1,4 @@
-(define-module (automatic))
+(define-module (automatic)
+  #:use-module (automatic presburger)
+  #:export (
+  ))

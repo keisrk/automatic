@@ -1,10 +1,11 @@
 (define-module (automatic afa)
+  #:use-module (automatic utils)
   #:use-module (automatic proposition)
-  #:use-module (automatic dfa)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (ice-9 q)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-41)          ;; Streams
   #:use-module (srfi srfi-42)
   #:use-module (srfi srfi-43)
   #:export (
@@ -30,6 +31,8 @@
             afa-dlt->afa-brnf-dlt
             afa-brnf-transition
             afa-brnf-run
+
+            afa->st8-dlt
             ))
 
 ;; Methods for numbers in  binary.
@@ -165,10 +168,12 @@ n := length- 1."
                 ((orig-c . dnf) (cons orig-c (dnf->brnf dnf)))))
        afa-dlt))
 
-(define (afa-preamble port init)
+(define (afa-preamble port init final st8)
   "preamble for AFA, required by (automatic graph)."
   (format port "node[shape=none];~&")
   (format port "\"#entry#\"[shape=none label=\"\"];~&")
+  (do-ec (: q st8)
+         (format port "\"~a\"[image=\"~a.png\", label=\"\"];~&" q q))
   (format port "\"#entry#\"->\"~d\"~&" init))
 
 ;; Transition for AFA is just a substitution.
@@ -186,3 +191,33 @@ n := length- 1."
   ;;
   (fold (lambda (c acc)
           (cons (afa-brnf-transition afa-br-dlt (car acc) c) acc)) (list brnf) w))
+
+(define-stream (make-trans-stream sigma afa-brnf-dlt q)
+  ;;
+  (stream-of (cons (cons q c) p)
+           (c in (list->stream sigma))
+           (p is (afa-brnf-transition afa-brnf-dlt q c))))
+
+(define-stream (make-st8-dlt sigma init afa-brnf-dlt)
+  (stream-let loop ((todo-strm (make-trans-stream sigma afa-brnf-dlt init))
+                    (st8 (make-q))
+                    (dlt (make-q)))
+              (stream-match
+               todo-strm
+               (() (stream-of (cons (car st8) (car dlt))))
+               ((x . strm)
+                (match x
+                       (((q . _) . p)
+                        (if (q-member? p st8)
+                            (loop strm
+                                  st8
+                                  (q-dedup-push! dlt x))
+                            (loop (stream-append strm (make-trans-stream sigma afa-brnf-dlt p))
+                                  (q-dedup-push! st8 p)
+                                  (q-dedup-push! dlt x)))))))))
+
+(define (afa->st8-dlt sigma afa-brnf-dlt init)
+  ;;
+  (stream-match
+   (make-st8-dlt sigma afa-brnf-dlt init)
+   ((x . _) x)))

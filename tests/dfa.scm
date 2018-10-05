@@ -18,6 +18,6 @@
 (define st8-dlt  (equation->st8-dlt  equation))
 (define init-fin (equation->init-fin equation))
 (define dlt (dlt-collect (cdr st8-dlt)))
-(format-graph #t (car init-fin) (cdr init-fin) dlt dfa-preamble)
+(format-graph #t (car init-fin) (cdr init-fin) (car st8-dlt) dlt dfa-preamble)
 
 (test-end)
