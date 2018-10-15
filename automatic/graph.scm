@@ -60,6 +60,7 @@
 ;; "node[shape=circle];~&"))
 (define (format-graph port init final st8 dlt preamble)
   (format port "digraph G {~&")
+  (format port "rankdir=\"LR\";")
   (preamble port init final st8)
   (do-ec (: trans dlt)
          (match trans

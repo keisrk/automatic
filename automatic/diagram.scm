@@ -271,11 +271,11 @@
   (let-keywords
    arg #f
    (;; Canvas setting
-    (width 500)
-    (height 500)
-    (radius 100)
-    (font-size 20)
-    (span 20)
+    (width  250)
+    (height 250)
+    (radius 50)
+    (font-size 10)
+    (span 10)
     ;; Color setting
     (bg-color 'white)
     (fill-color cyan)
@@ -292,7 +292,7 @@
      ;;;; Set fill color
      (diagram-color diagram fill-color)
      ;;;; Draw BRNF
-     (diagram-brnf diagram brnf)
+     (if brnf (diagram-brnf diagram brnf))
      ;; Back Ground
      ;;;; Set mode to 'DEST_OVER'
      (diagram-mode diagram 'dest-over)

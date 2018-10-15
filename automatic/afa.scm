@@ -32,7 +32,9 @@
             afa-brnf-transition
             afa-brnf-run
 
+            afa-preamble
             afa->st8-dlt
+
             ))
 
 ;; Methods for numbers in  binary.
@@ -48,7 +50,7 @@ n := length- 1."
 
 (define (decimal->binary n)
   ;; n: decimal number
-  ;; 3 -> 11
+  ;; 3 -> (1 1)
   (let ((binary (euclidean-remainder n 2)))
     (if (or (equal? n 0)
             (equal? n 1))
@@ -110,7 +112,7 @@ n := length- 1."
   (fold-ec #nil
            (: be-orig be-st8-bin)
            (:let be-dest (assoc-ref be-orig-dest-al be-orig))
-           (:let cls (if be-dest
+           (:let cls (if be-dest ;; MUST be always true...
                          (make-afa-dest-cls-noninit afa-orig be-orig be-dest)
                          #f))
            (if cls)
@@ -173,8 +175,8 @@ n := length- 1."
   (format port "node[shape=none];~&")
   (format port "\"#entry#\"[shape=none label=\"\"];~&")
   (do-ec (: q st8)
-         (format port "\"~a\"[image=\"~a.png\", label=\"\"];~&" q q))
-  (format port "\"#entry#\"->\"~d\"~&" init))
+         (format port "\"~a\"[image=\"~a.png\", label=\"\"];~&" q (brnf->string q)))
+  (format port "\"#entry#\"->\"~s\"~&" init))
 
 ;; Transition for AFA is just a substitution.
 ;; We assume each record of afa delta is in BRNF.
@@ -183,7 +185,7 @@ n := length- 1."
   ;;
   (let ((sbst (lambda (orig)
                 (match (assoc-ref afa-br-dlt (cons orig c))
-                       (#f 'Not_Found)
+                       (#f #nil)
                        (b b)))))
     (substitution brnf sbst)))
 
@@ -196,9 +198,11 @@ n := length- 1."
   ;;
   (stream-of (cons (cons q c) p)
            (c in (list->stream sigma))
-           (p is (afa-brnf-transition afa-brnf-dlt q c))))
+           (p is (match q
+                        ('init (assoc-ref afa-brnf-dlt (cons 'init c)))
+                        (q (afa-brnf-transition afa-brnf-dlt q c))))))
 
-(define-stream (make-st8-dlt sigma init afa-brnf-dlt)
+(define-stream (make-st8-dlt sigma afa-brnf-dlt init)
   (stream-let loop ((todo-strm (make-trans-stream sigma afa-brnf-dlt init))
                     (st8 (make-q))
                     (dlt (make-q)))

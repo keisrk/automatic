@@ -11,16 +11,14 @@
             make-cls
             make-singleton-cls
             cls<
-            cls-conflict?
-            cls-deducible?
             cls-dnf-union
             cls-negation
-            dnf-simplify
             dnf-union
             dnf-conjunction
             dnf-negation-wrt
 
             ;; Methods for BRNF
+            brnf->string
             make-term
             make-singleton-term
             term<
@@ -67,12 +65,6 @@
          ((_ . #f) #f)
          (_ (< lit lit'))))
 
-(define (lit-conflict? lit lit')
-  (match (cons lit lit')
-         ((0 . 1) #t)
-         ((1 . 0) #t)
-         (_ #f)))
-
 (define (lit-negation lit)
   ;; negation literal
   (match lit
@@ -87,70 +79,49 @@
          ((_ . #f) lit)
          ((0 . _) 0)
          ((_ . 0) 0)
-         (_ 1)))
+         ((1 . 1) 1)))
 
-(define (cls< cls cls')
-  ;;  lex order over cls
+(define (s-cls< cls cls')
+  ;; lex order over cls
   (vector-fold
    (lambda (i acc lit lit')
      (match acc
-            ('init (if (equal? lit lit') 'init (lit< lit lit')))
+            ('equals (if (equal? lit lit') 'equals (lit< lit lit')))
             (x x)))
-   'init cls cls'))
+   'equals cls cls'))
 
-(define (cls-valid? cls)
-  ;;
- (vector-every (lambda (lit) (equal? lit #f)) cls))
-
-(define (cls-conflict? cls cls')
-  ;; cls and cls' conflict when
-  (vector-any lit-conflict? cls cls'))
-
-(define (cls-deducible? cls cls')
-  ;; cls and cls' are deducible when
-  (vector-every (lambda (lit lit') (or (equal? lit lit')
-                                       (lit-conflict? lit lit'))) cls cls'))
-
-(define (cls-deduce cls cls')
-  ;; cls'' is deduced from cls and cls' when
-  (vector-map (lambda (i lit lit') (if (equal? lit lit') lit #f)) cls cls'))
+(define (cls< cls cls')
+  ;; lex order over cls
+  (match (s-cls< cls cls')
+         ('equals #f) ;; Strict odering
+         (x x)))
 
 (define (cls-dnf-union cls dnf)
   ;;
-  (receive (ded-dnf dnf')
-           (partition (lambda (x) (cls-deducible? x cls)) dnf)
-           (if (null? ded-dnf) (insert cls< cls dnf)
-               (let ((new-dnf (map (lambda (x) (cls-deduce x cls)) ded-dnf)))
-                 (fold cls-dnf-union dnf' new-dnf)))))
+  (insert cls< cls dnf))
 
 (define (cls-negation cls)
   ;; - #(#f 0 1) = { #(#f #f 0) #(#f 1 #f) }
-  ;;
+  ;; - #(#f .. #f) = {}
   (vector-fold
    (lambda (i acc lit)
      (match lit
             (#f acc)
-            (lit (insert cls<
+            (lit (cls-dnf-union
                   (make-singleton-cls (vector-length cls) i (lit-negation lit))
                   acc))))
    #nil cls))
 
-(define (dnf-simplify dnf)
-  ;;
-  (match dnf
-         (((? cls-valid? min-cls) . _) (list min-cls))
-         (_ dnf)))
-
 (define (dnf-union dnf dnf')
   ;; (c1 c2) \/ (c1 c3) = (c1 c2 c3)
-  (fold cls-dnf-union (dnf-simplify dnf') (dnf-simplify dnf)))
+  (fold cls-dnf-union
+        dnf' dnf))
 
 (define (dnf-conjunction dnf dnf')
   ;; returns (dnf) /\ (dnf') in DNF form
   (fold-ec #nil
-           (: cls (dnf-simplify dnf))
-           (: cls' (dnf-simplify dnf'))
-           (if (not (cls-conflict? cls cls')))
+           (: cls dnf)
+           (: cls' dnf')
            (vector-map (lambda (i lit lit') (lit-conjunction lit lit')) cls cls')
            cls-dnf-union))
 
@@ -158,17 +129,32 @@
   ;; When vars = {x0 x1 x2} then (dnf-negation-wrt 3 dnf)
   ;; returns -(dnf) in DNF form
   (fold-ec (list (make-cls vars))
-           (: cls (dnf-simplify dnf))
+           (: cls dnf)
            (cls-negation cls)
            dnf-conjunction))
 
 ;; Methods for BRNF
 ;; term = 1 iff term = #(0 0 ... 0)
-;; brnf = {}
+;; brnf = 0 iff brnf = #nil
+
+(define (term->string term)
+  (string-join (map number->string (vector->list term)) ""))
+
+(define (brnf->string brnf)
+  (match brnf
+         ((? null? btm) "btm")
+         ((? symbol? s) (symbol->string s))
+         (_ (string-join (map (lambda (term) (term->string term)) brnf) "+"))))
 
 (define (make-term size)
   ;; size = 3 then #(0 0 0)
+  ;; #(0 .. 0): term = Top
   (make-vector size 0))
+
+(define (make-brnf size)
+  ;; size = 3 then (#(0 0 0))
+  ;; (#(0 .. 0)): brnf = Top
+  (list (make-vector size 0)))
 
 (define (make-singleton-term size i)
   ;; size = 3; i = 1; #(0 1 0)
@@ -176,14 +162,20 @@
     (vector-set! term i 1)
     term))
 
-(define (term< term term')
+(define (s-term< term term')
   ;;  lex order over terms
   (vector-fold
    (lambda (i acc v v')
      (match acc
-            ('init (if (equal? v v') 'init (< v v')))
+            ('equals (if (equal? v v') 'equals (< v v')))
             (x x)))
-   'init term term'))
+   'equals term term'))
+
+(define (term< term term')
+  ;; lex order over term
+  (match (s-term< term term')
+         ('equals #f) ;; Strict odering
+         (x x)))
 
 (define (term-multiplication term term')
   ;; term * term
@@ -193,14 +185,14 @@
   ;;
   (receive (same brnf')
            (partition (lambda (x) (equal? x term)) brnf)
-           (if (even? (length same)) (insert term< term brnf')
+           (if (null? same) (insert term< term brnf')
                brnf')))
 
 (define (brnf-multiplication brnf brnf')
   ;; brnf * brnf'
   (match (cons brnf brnf')
-         ((#nil . _) brnf')
-         ((_ . #nil) brnf)
+         ((#nil . _) #nil)
+         ((_ . #nil) #nil)
          (_ (fold-ec #nil
                      (: term brnf)
                      (: term' brnf')
@@ -215,16 +207,16 @@
          (_ (fold term-brnf-xor brnf brnf'))))
 
 (define (term-substitution term sigma)
-  ;;
+  ;; sigma :: int -> brnf | #f
   (vector-fold
    (lambda (i acc v)
      (case v
        ((0) acc)
        ((1) (match (sigma i)
-                 ('Not_Found (brnf-multiplication (list (make-singleton-term (vector-length term) i)) acc))
+                 (#f (brnf-multiplication (list (make-singleton-term (vector-length term) i)) acc))
                  (brnf (brnf-multiplication brnf acc))))
        ))
-   #nil term))
+   (make-brnf (vector-length term)) term))
 
 (define (substitution brnf sigma)
   ;;
@@ -251,7 +243,6 @@
   ;;
   (match dnf
          (#nil #nil)
-         ((cls . #nil) (cls->brnf cls))
          ((cls . dnf') (let* ((brnf-l (cls->brnf cls))
                               (brnf-r (dnf->brnf dnf'))
                               (brnf-c (brnf-multiplication brnf-l brnf-r)))
