@@ -38,41 +38,51 @@
             ))
 
 ;; Methods for numbers in  binary.
-(define (binary-length n)
-  "n: decimal number
-Suppose state set has index from 0 to n. (binary-length n)
+(define (binary-length size)
+  "size: decimal number
+Suppose a set has index from 0 to n. (length set) == n + 1.
 returns sufficient number of binarys to cover the index range, i.e. 
-n := length- 1."
-  (if (or (equal? n 0)
-          (equal? n 1))
+ (list-ec (: i 9) (binary-length i)) ==  (1 1 2 2 3 3 3 3 4)"
+  (if (or (equal? size 0)
+          (equal? size 1))
       1
-      (+ 1 (binary-length (euclidean-quotient n 2)))))
+      (+ 1 (binary-length (euclidean-quotient size 2)))))
 
-(define (decimal->binary n)
+(define (binary-enc n)
   ;; n: decimal number
   ;; 3 -> (1 1)
   (let ((binary (euclidean-remainder n 2)))
     (if (or (equal? n 0)
             (equal? n 1))
         (list binary)
-        (cons binary (decimal->binary (euclidean-quotient n 2))))))
+        (cons binary (binary-enc (euclidean-quotient n 2))))))
 
-(define (binary-fill-zero b n)
+(define (binary-fill-zero b l)
   ;; b: binary number 
-  ;; n: decimal number
+  ;; l: binary-length to fill 0s
   ;; To adjust binary-lenght by filling 0
-  (let ((diff (- n (length b))))
-    (if (>= diff 0)
+  (let ((diff (- l (length b))))
+    (if (> diff 0)
         (append b (make-list diff 0))
-        #f)))
+        b)))
 
-(define (binary-range m n)
-  ;; m, n: decimal number
-  ;; m: 0, n: 3
-  ;; Enumerate binary numbers from m to n.
-  (if (> m n) #nil
-      (cons (binary-fill-zero (decimal->binary m) (binary-length n))
-            (binary-range (+ 1 m) n))))
+(define (decimal->binary n l)
+  ;; n: decimal number
+  ;; l: binary-length
+  (let ((binary (binary-fill-zero (binary-enc n) l)))
+    (list->vector binary)))
+
+(define (binary-range n)
+  ;; n: decimal number
+  ;; n: 3
+  ;; Enumerate binary numbers from 0 to n.
+  ;;(if (> m n) #nil
+  ;;    (cons (binary-fill-zero (decimal->binary m) (binary-length n))
+  ;;          (binary-range (+ 1 m) n))))
+  (let ((l (binary-length n)))
+    (list-ec (: i (+ n 1))
+             (decimal->binary i l)
+             )))
 
 ;; Methods for binary encoding.
 (define (bin-enc-st8 dfa-st8 dfa-init)
@@ -81,8 +91,8 @@ n := length- 1."
   ;;  (q4 . #(0 0 1)) (q5 . #(1 0 1)) (q6 . #(0 1 1)) (q7 . #(1 1 1)))
   (let* ((non-inits (filter (lambda (x) (not (equal? x dfa-init))) dfa-st8))
          (lhs (cons dfa-init non-inits))
-         (rhs (binary-range 0 (- (length lhs) 1))))
-    (map (lambda (l r) (cons l (list->vector r))) lhs rhs)))
+         (rhs (binary-range (- (length lhs) 1))))
+    (map (lambda (l r) (cons l r)) lhs rhs)))
 
 (define (bin-enc-dlt be-st8 dfa-dlt)
   ;; (int * vec) * int alist to vec * (int vec * int vec) alist

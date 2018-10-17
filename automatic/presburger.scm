@@ -153,4 +153,3 @@
   (match
    equation
    ((coeffs . const) (list->vector (map car coeffs)))))
-
