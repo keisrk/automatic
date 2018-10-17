@@ -58,7 +58,7 @@
                                                                 ((q3 . a) . q4) ((q3 . b) . q2)
                                                                 ((q4 . a) . q0) ((q4 . b) . q3)))
              (bin-enc-st8 '(q0 q1 q2 q3 q4) 'q0)))
-       (dlt-init (make-afa-dest-cls-init dlt-noninit #(0 1 1) 'a 3)))
+       (dlt-init (make-afa-dest-cls-init dlt-noninit #(0 1 1) 'a)))
   (display dlt-noninit)
   (newline)
   (display dlt-init)

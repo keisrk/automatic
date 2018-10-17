@@ -107,13 +107,13 @@ returns sufficient number of binarys to cover the index range, i.e.
                         (acons k (list v) acc))) )))
         #nil dfa-dlt))
 
-;; Methods for AFA construction.
-(define (make-afa-dest-cls-noninit afa-orig be-orig be-dest)
-  ;; afa-orig: int
-  ;; be-orig, be-dest: binary number
-  ;; be-dest[afa-orig] = 1 then returns cls
-  ;; be-dest[afa-orig] = 0 then returns #f
-  (if (equal? (vector-ref be-dest afa-orig) 0) #f be-orig))
+;; ;; Methods for AFA construction.
+;; (define (make-afa-dest-cls-noninit afa-orig be-orig be-dest)
+;;   ;; afa-orig: int
+;;   ;; be-orig, be-dest: binary number
+;;   ;; be-dest[afa-orig] = 1 then returns cls
+;;   ;; be-dest[afa-orig] = 0 then returns #f
+;;   (if (equal? (vector-ref be-dest afa-orig) 0) #f be-orig))
 
 (define (make-afa-dest-noninit afa-orig be-st8-bin be-orig-dest-al)
   ;; be-st8-bin: binary numbers list, i.e. (map cdr be-st8)
@@ -121,12 +121,9 @@ returns sufficient number of binarys to cover the index range, i.e.
   ;; returns DNF
   (fold-ec #nil
            (: be-orig be-st8-bin)
-           (:let be-dest (assoc-ref be-orig-dest-al be-orig))
-           (:let cls (if be-dest ;; MUST be always true...
-                         (make-afa-dest-cls-noninit afa-orig be-orig be-dest)
-                         #f))
-           (if cls)
-           cls
+           (:let be-dest (assoc-ref be-orig-dest-al be-orig));; Cannot be #f
+           (if (equal? (vector-ref be-dest afa-orig) 1))
+           be-orig
            cls-dnf-union))
  
 (define (make-afa-dlt-noninit be-dlt be-st8)
@@ -141,8 +138,7 @@ returns sufficient number of binarys to cover the index range, i.e.
                          (make-afa-dest-noninit afa-orig be-st8-bin be-orig-dest-al))))
            cons))
 
-(define (make-afa-dest-cls-init afa-dlt-non-init be-final c vars)
-  ;; When vars = {x0 x1 x2} then vars(size) = 3.
+(define (make-afa-dest-cls-init afa-dlt-non-init be-final c)
   ;; be-final: q0 = #(1 0 1 1), final state of DFA. 
   ;; assign: 0 -> 1, 1 -> 0, 2 -> 1, 3 -> 1
   ;; delta:  0 --c-> P0, 1 --c-> P1, 2 --c-> P2, 3 --c-> P3
@@ -152,25 +148,24 @@ returns sufficient number of binarys to cover the index range, i.e.
   (vector-fold
    (lambda (i acc assign)
      (match (assoc-ref afa-dlt-non-init (cons i c))
-            (#f acc)
             (afa-dest
              (dnf-conjunction
               (case assign
-                ((0) (dnf-negation-wrt vars afa-dest))
+                ((0) (dnf-negation-wrt (vector-length be-final) afa-dest))
                 ((1) afa-dest)) acc))))
-   (list (make-cls vars)) be-final))
+   (list (make-cls (vector-length be-final))) be-final))
 
-(define (make-afa-dest-init afa-dlt-non-init be-finalst8-bin c vars)
+(define (make-afa-dest-init afa-dlt-non-init be-finalst8-bin c)
   ;; be-finalst8-bin: binary numbers list of finals.
   (fold-ec #nil
            (: be-final be-finalst8-bin)
-           (make-afa-dest-cls-init afa-dlt-non-init be-final c vars)
+           (make-afa-dest-cls-init afa-dlt-non-init be-final c)
            dnf-union))
 
-(define (make-afa-dlt-init afa-init afa-dlt-non-init be-finalst8-bin sigma vars)
+(define (make-afa-dlt-init afa-init afa-dlt-non-init be-finalst8-bin sigma)
   ;;
   (list-ec (: c sigma)
-           (:let dest (make-afa-dest-init afa-dlt-non-init be-finalst8-bin c vars))
+           (:let dest (make-afa-dest-init afa-dlt-non-init be-finalst8-bin c))
            (cons (cons afa-init c) dest)))
 
 (define (afa-dlt->afa-brnf-dlt afa-dlt)
@@ -194,9 +189,7 @@ returns sufficient number of binarys to cover the index range, i.e.
 (define (afa-brnf-transition afa-br-dlt brnf c)
   ;;
   (let ((sbst (lambda (orig)
-                (match (assoc-ref afa-br-dlt (cons orig c))
-                       (#f #nil)
-                       (b b)))))
+                (assoc-ref afa-br-dlt (cons orig c)))))
     (substitution brnf sbst)))
 
 (define (afa-brnf-run afa-br-dlt brnf w)

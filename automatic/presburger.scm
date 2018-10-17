@@ -93,8 +93,8 @@
   (stream-of (cons (cons q c) p)
            (a in (make-assign-stream coeffs))
            (c is (list->vector (map cdr a)))
-           (p' is (assign-evaluate coeffs q a))
-           (p is (if (even? p') (half p') #f))))
+           (p' is (if q (assign-evaluate coeffs q a) #f))
+           (p is  (if q (if (even? p') (half p') #f) #f))))
 
 (define-stream (make-equation->st8-dlt coeffs init-strm)
   ;;
@@ -110,13 +110,8 @@
                         (loop (make-trans-stream coeffs init)
                               (q-dedup-push! st8 init)
                               dlt))
-                       (((q . _) . #f)
-                        (loop strm
-                              st8
-                              (q-dedup-push! dlt x)))
-
                        (((q . _) . p)
-                        (if (q-member? p st8)
+                        (if (and (q-member? q st8) (q-member? p st8))
                             (loop strm
                                   st8
                                   (q-dedup-push! dlt x))
