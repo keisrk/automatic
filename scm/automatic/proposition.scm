@@ -53,8 +53,8 @@
 ;;        #(1, #f), #(1, 0), #(1, 1)
 ;;        }
 ;; dnf = False iff dnf = {}
-(define (xor l r) (match `(,l ,r) ((or (#t #f) (#f #t)) #t) (_ #f)))
-(define (iff l r) (not (xor l r)))
+(define (xor l r) "xor" (match `(,l ,r) ((or (#t #f) (#f #t)) #t) (_ #f)))
+(define (iff l r) "iff" (not (xor l r)))
 
 (define (cls-eval cls assign)
   "assign[i] = 1 | 0"

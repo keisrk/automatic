@@ -4,11 +4,16 @@
 *.log
 *.m4
 *.trs
-configure
-config.status
-Makefile
-Makefile.in
-pre-inst-env
-build-aux/
-resources/*
+*.pdf
+*.aux
+*.lod
 
+scm/configure
+scm/config.status
+scm/Makefile
+scm/Makefile.in
+scm/pre-inst-env
+scm/build-aux/
+scm/resources/*
+
+ml/_build
