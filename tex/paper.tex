@@ -1,0 +1,44 @@
+\documentclass{llncs}
+
+% Configuration for draft version
+\usepackage[center, width=13.5cm, height=22.5cm]{crop}
+
+\usepackage[enable]{easy-todo}
+\usepackage{amsmath, amssymb}
+\usepackage{stmaryrd}
+\usepackage{bussproofs}
+
+\title{Antichain Algorithms for Alternating Finite Automata}
+\author{Kei Shirakizawa, Mizuhito Ogawa}
+\institute{
+  School of Information Science \\
+  Japan Advanced Instutute of Science and Technology, Japan \\
+  \email{\( \{ \)kei.shirakizawa, mizuhito\( \} \)@jaist.ac.jp}
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We propose an alternating finite automaton(AFA) based approach for
+automata-theoretic theorem proving technique. The technique reduces
+satisfiability/validity checking of a quantified formula to emptiness checking
+of the regular language which encodes the model of the formula. In the AFA
+setting, propositions symbolically represent the reachable states and their
+acceptance follows the truth valuation. Antichain algorithm is a practically
+efficient method to prune the reachable states which explosively increase in
+number. Instead of constructing all reachable states explicitly, we only keep a
+set of propositions pairwise incomparable w.r.t. implication to judge the
+language emptiness. We experimented our method on the theory of Presburger
+arithmetic.
+\end{abstract}
+
+\input{introduction}
+\input{prelim}
+\input{alter}
+\input{algorithm}
+
+\bibliographystyle{splncs04}
+\bibliography{reference}
+\listoftodos
+\end{document}

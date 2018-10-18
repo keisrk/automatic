@@ -1,0 +1,35 @@
+#+TITLE: Alternating Finite Automata
+#+OPTIONS: H:1 num:nil toc:nil
+#+LaTeX_CLASS: beamer
+#+LaTeX_CLASS_OPTIONS: [presentation, smaller]
+#+BEAMER_THEME: metropolis
+#+LaTeX_HEADER: \setbeamercolor{frametitle}{fg=mDarkTeal, bg=black!2}
+#+LaTex_HEADER: \defbeamertemplate{description item}{align left}{\insertdescriptionitem\hfill}
+#+LaTex_HEADER: \setbeamertemplate{description item}[align left]
+
+* Alternating Finite Automata
+* Antichain Algorithm
+** Illustration
+- Definition
+- Example
+- Proof Sketch
+* Def(Antichain Algorithm)
+#+BEGIN_definition
+[Antichain algorithm]
+#+END_definition
+* Example(Antichain Algorithm)
+* Proof Sketch(Antichain Algorithm)
+* Congluence Closure
+** Illustration
+- Definition
+- Example
+- Proof Sketch
+* Def(Congluence Closure)
+#+BEGIN_definition
+[Congluence closure]
+#+END_definition
+
+* Example(Congluence Closure)
+* Proof Sketch(Congluence Closure)
+* Implementation via SAT
+* Conclusion & Future work

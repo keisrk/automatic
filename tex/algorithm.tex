@@ -1,0 +1,90 @@
+\section{Algorithm for checking language emptiness}
+\todo{Everything from the scratch.}
+We now describe at a high level the automata theoretic proving technique. Given
+an \( \mathit{AFA}\) \( \mathcal{A} \), the \textit{emptiness} problem is to
+determine \( \mathcal{L}(\mathcal{A}) = \varnothing \).
+
+\begin{definition}
+\begin{align*}
+  Post         &:  2^\mathit{Prop} \rightarrow 2^\mathit{Prop} \\
+  Post(\Gamma) &:= \bigcup\limits_{ \alpha \in \Gamma } \bigcup\limits_{ c \in \Sigma } \{ \Delta(\alpha, c) \}
+\end{align*}
+
+\begin{align*}
+\mathit{succ}         &:  2^\mathit{Prop} \rightarrow 2^\mathit{Prop} \\ 
+\mathit{succ}(\Gamma) &:= \{ s \} \cup Post(\Gamma)
+\end{align*}
+
+\begin{align*}
+  \lceil \Gamma \rceil := \{ \alpha \in \Gamma \mid \text{ for all } \psi \in \Gamma \text{, not } \alpha \Rightarrow \psi \}
+\end{align*}
+
+We say \( \alpha \) and \( \beta \) are congruent if the language beginning from
+\( \alpha \) and from \( \beta \) are the same and denote \( \alpha \cong
+\beta\).
+
+\begin{align*}
+  \lceil \alpha \rceil _{\Gamma} &:= \left\{ \begin{array}{ll}
+    \beta \in \Gamma & \text{ if } \alpha \Rightarrow \beta \text{ and } \alpha \cong \beta \\
+    \alpha & \text{ otherwise }
+  \end{array} \right.
+\end{align*}
+\end{definition}
+
+\begin{theorem}
+[Emptiness] \[ f \models \mathit{succ}^*(\varnothing) \text{ iff }
+\mathcal{L}(\mathcal{A}) = \varnothing. \]
+\end{theorem}
+
+\begin{theorem}
+[Antichain] \[ f \models \lceil \mathit{succ}(\varnothing) \rceil^* \text{ iff }
+\mathcal{L}(\mathcal{A}) = \varnothing. \]
+\end{theorem}
+
+\begin{definition}
+Let \( \alpha \in \mathit{Prop} \) and \( p \in \{1, 2\}^* \). We take subformulas of \( \alpha \) at the position \( p \) in the following way.
+\begin{itemize}
+\item \( \alpha |_{ \epsilon } = \{ \alpha \}\)
+\item \( \alpha \bigcirc \beta |_{ 1p } = \alpha |_{p} \)
+\item \( \alpha \bigcirc \beta |_{ 2p } = \beta |_{p} \)
+\item \( \bigwedge\{\alpha_1, \cdots \alpha_n \} |_{ 1p } = \bigcup\limits_{1 \leq i \leq n} \alpha_i |_{p} \)
+\item \( \bigvee  \{\alpha_1, \cdots \alpha_n \} |_{ 1p } = \bigcup\limits_{1 \leq i \leq n} \alpha_i |_{p} \)
+\end{itemize}
+If not specified above, then the operation returns the empty set, e.g., \(
+\bigvee \{\alpha_1, \cdots \alpha_n \} |_{ 2p } = \varnothing \).
+\end{definition}
+This extends to the set of propositions at the given position \( p \). \(\Gamma|_{p} = \bigcup\limits_{\alpha \in \Gamma}\alpha|_p \).
+
+\begin{definition}
+Let \( \varphi \in \mathit{QF} \) and \( \Gamma \) be a subset of \( \mathit{Prop} \).
+\begin{itemize}
+\item Case \( \varphi |_p \) is a literal
+
+\( \Delta|_p = \Delta \)
+\item Case \( \varphi |_p = \varphi_1 \bigcirc \varphi_2 \) 
+
+\( \Delta|_p(\alpha_1 \bigcirc \alpha_2, c) = \Delta|_{1p}(\alpha_1, c) \bigcirc \Delta|_{2p}(\alpha_2, c) \)
+\item Case \( \varphi |_p = \forall x_i .\ \varphi_1 \) 
+
+\( \Delta|_p(\bigwedge\{\alpha_1 \cdots \alpha_n\}, c) = \bigwedge\{ \Delta|_{1p}(\alpha_1, c) \cdots \Delta|_{1p}(\alpha_n, c)\} \)
+\end{itemize}
+\end{definition}
+
+\begin{definition}
+\begin{itemize}
+\item Case \( \varphi |_p \) is a literal
+
+\( \lceil\Delta|_p\rceil_\Gamma(\alpha, c) = \lceil\Delta(\alpha, c)\rceil_\Gamma \)
+\item Case \( \varphi |_p = \varphi_1 \bigcirc \varphi_2 \) 
+
+\( \lceil\Delta|_p\rceil_\Gamma(\alpha_1 \bigcirc \alpha_2, c) = \Delta|_{1p}(\alpha_1, c) \bigcirc \Delta|_{2p}(\alpha_2, c) \)
+\item Case \( \varphi |_p = \forall x_i .\ \varphi_1 \) 
+
+\( \Delta|_p(\bigwedge\{\alpha_1 \cdots \alpha_n\}, c) = \bigwedge\{ \Delta|_{1p}(\alpha_1, c) \cdots \Delta|_{1p}(\alpha_n, c)\} \)
+\end{itemize}
+\end{definition}
+
+\begin{theorem}
+[Antichain for each subformula] \[ f \models \lceil \mathit{succ}(\varnothing) \rceil|_{\epsilon}^* \text{ iff }
+\mathcal{L}(\mathcal{A}) = \varnothing. \]
+\end{theorem}
