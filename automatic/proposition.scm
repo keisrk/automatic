@@ -7,6 +7,13 @@
   #:use-module (srfi srfi-42)
   #:use-module (srfi srfi-43)
   #:export (
+            xor
+            iff
+            cls-eval
+            dnf-eval
+            term-eval
+            brnf-eval
+
             ;; Methods for DNF 
             make-cls
             make-singleton-cls
@@ -46,6 +53,40 @@
 ;;        #(1, #f), #(1, 0), #(1, 1)
 ;;        }
 ;; dnf = False iff dnf = {}
+(define (xor l r) (match `(,l ,r) ((or (#t #f) (#f #t)) #t) (_ #f)))
+(define (iff l r) (not (xor l r)))
+
+(define (cls-eval cls assign)
+  "assign[i] = 1 | 0"
+  (vector-fold
+   (lambda (i acc lit asg)
+     (match lit
+            (#f acc)
+            (_ (and (iff lit asg) acc))))
+   #t cls assign))
+
+(define (dnf-eval dnf assign)
+  ""
+  (fold
+   (lambda (cls acc) (or acc (cls-eval cls assign)))
+   #f
+   dnf))
+
+(define (term-eval term assign)
+  "assign[i] = 1 | 0"
+  (vector-fold
+   (lambda (i acc lit asg)
+     (match lit
+            (0 acc)
+            (1 (and (equal? 1 asg) acc))))
+   #t term assign))
+
+(define (brnf-eval brnf assign)
+  ""
+  (fold
+   (lambda (term acc) (xor acc (term-eval term assign)))
+   #f
+   brnf))
 
 (define (make-cls size)
   ;; size = 3 then #(#f #f #f)
