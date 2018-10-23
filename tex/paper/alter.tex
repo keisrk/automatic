@@ -108,33 +108,38 @@ L(\mathcal{A}_{\psi}) \) because for any string \( w \in \Sigma^* \), \(
 s_\varphi \wedge s_\psi \xrightarrow[]w \varphi' \wedge \psi' \) iff \(
 s_\varphi \xrightarrow[]w \varphi' \) and \( s_\psi \xrightarrow[]w \psi' \).
 
-Without loss of generality, we can restrict the domain of \(
-\Delta_{\mathcal{A}} \) according to the construction. Suppose \(
-\mathcal{A}_{\varphi \wedge \psi} \) is a conjunction of 2 automata \(
-\mathcal{A}_{\varphi} \) and \( \mathcal{A}_{\psi} \), then the domain of \(
-\Delta_{\varphi \wedge \psi} \) can be restricted to a set of propositions whose
-top symbol is \( \wedge \). For arbitrary construction, the following equation
-holds.
-\begin{align*}
-  \Delta_{\varphi \bigcirc \psi}(a, \alpha \bigcirc \beta) &=
-  \Delta_\varphi(a, \alpha) \bigcirc \Delta_\psi(a, \beta) \\
-  \Delta_{\neg \varphi}(a, \neg \alpha) &= \neg \Delta_\varphi(a, \alpha)
-\end{align*}
-
 Quantifiers are represented in terms of the transition function rather than the
 tuple structure. Unlike the logical connectives we have seen above, the
 quantifiers require us to keep the nested structure. Let \( \mathsf{Q} \) stand
 for either \( \forall \) or \( \exists \) and the construction affects none of
 the 5-tuple elements.
 
+\begin{prooftree}
+  \AxiomC{
+    \( \mathcal{A}_\varphi = (
+    Q_\varphi,
+    \Sigma,
+    s_\varphi,
+    f_\varphi,
+    \Delta_\varphi) \)}
+  \UnaryInfC{
+    \( \mathcal{A}_{\mathsf{Q}x_i. \varphi} = (
+    Q_\varphi,
+    \Sigma,
+    s_\varphi,
+    f_\varphi,
+    \Delta_{\mathsf{Q}})\)
+  }
+\end{prooftree}
+
 \[
-\Delta_{\forall x_i .\ \varphi}(\mathbf{a}, \alpha) =
+\Delta_{\forall}(\mathbf{a}, \alpha) =
 \bigwedge\limits_{\mathbf{a}' \in \pi_i(\mathbf{a})} 
-\{ \Delta_{\varphi}(\alpha, \mathbf{a}') \}
+\{ \Delta(\alpha, \mathbf{a}') \}
 \quad
-\Delta_{\exists x_i .\ \varphi}(\mathbf{a}, \alpha) = 
+\Delta_{\exists}(\mathbf{a}, \alpha) = 
 \bigvee  \limits_{\mathbf{a}' \in \pi_i(\mathbf{a})} 
-\{ \Delta_{\varphi}(\alpha, \mathbf{a}') \}
+\{ \Delta(\alpha, \mathbf{a}') \}
 \]
 
 From the induction on the length of strings it follows that
@@ -153,9 +158,10 @@ Let \(\alpha, \beta \in \mathit{Prop} \). If \( \alpha \Rightarrow \beta \) then
 \( 2^k \) states if and only if it's reversed language \( \mathcal{L}^R \) is
 accepted by an AFA with \( k + 1 \) states.
 \end{theorem}
-
+\todo{Expain construction idea citing original paper.}
 \begin{example}
   \begin{figure}
+    \includegraphics[width=8cm]{images/dfa}
     \includegraphics[width=8cm]{images/afa}
   \end{figure}
 \end{example}
