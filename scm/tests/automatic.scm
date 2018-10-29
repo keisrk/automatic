@@ -9,8 +9,8 @@
              (srfi srfi-64))
 
 (test-begin "automatic")
-;; -x + y = 2
-(define equation     '(((x . -1) (y .  1)) . 1))
+;; -x + 2y  = 1
+(define equation     '(((x . -1) (y .  2)) . 1))
 (define sigma        (equation->sigma    equation))
 (define st8-dlt      (equation->st8-dlt  equation))
 (define init-fin     (equation->init-fin equation))

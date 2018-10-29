@@ -7,8 +7,8 @@ vector \( \mathbf{a} \). We take \( \uplus \) for the disjoint union of sets, \(
 alphabet, a finite set of symbols ranged over by \( a, b, c \), and \( \Sigma^*
 \) denotes the set of finite words over \( \Sigma \), ranged over by \( w_1,
 w_2, \cdots, w_n \). \( \epsilon \) denotes the empty string. We adopt the
-standard convention of the literature\cite{Thomas:1997,tata2007} and assume
-familiarity with formal language theory\cite{Kozen:1997}.
+standard convention of the literature \cite{Thomas:1997,tata2007} and assume
+familiarity with formal language theory \cite{Kozen:1997}.
 
 A finite automaton(\( \mathit{FA} \)) over an alphabet \( \Sigma \) is a 5-tuple
 \( \mathcal{M} = (Q, \Sigma, s, F, \delta) \) consisting of a finite set \( Q \)
@@ -19,7 +19,7 @@ of states, disjoint from \( \Sigma \), ranged over by \( q, p, r \) or \( q_1,
 any pairs in \( Q \times \Sigma \) to some unique state, otherwise
 non-deterministic.
 
-\( \mathcal{B} = (\{0, 1\}, 0, 1, \neg, \wedge, \vee) \) is a boolean
+\( \mathcal{B} = (\{0, 1\}, \bot, \perp, \neg, \wedge, \vee) \) is a boolean
 algebra. Let \( Q = \{ q_0, q_1, ..., q_n \} \) be a set of states and we assume
 that states are indexed. Here we also use \( Q \) as a set of propositional
 variables and let \( q_i \in Q \) vary through \( \mathcal{B} \). A proposition
@@ -37,8 +37,8 @@ Since logical equivalence \( \Leftrightarrow \) is an equivalence relation over
 \mathit{Prop}_{/\Leftrightarrow} \). If \( \alpha \) and \( \beta \) are
 logically equivalent, then they are identical in \(
 \mathit{Prop}_{/\Leftrightarrow} \) and belong to the class \( [\alpha] \). For
-instance, a set of propositions \( \{ 0, \neg q_0 \wedge q_0 \} \) is taken for
-just the singleton \( \{ [0] \} \). Although \( \mathit{Prop} \), the set of
+instance, a set of propositions \( \{ \bot, \neg q_0 \wedge q_0 \} \) is taken for
+just the singleton \( \{ [\bot] \} \). Although \( \mathit{Prop} \), the set of
 propositions, is infinite, we only consider the finite representative members \(
 [\alpha] \in \mathit{Prop}_{/\Leftrightarrow} \). Thus we have \(
 |\mathit{Prop}_{/\Leftrightarrow}| = 2^{2^{|Q|}} \). We implicitly refer to the
@@ -50,15 +50,15 @@ and to \( [\alpha] \) as \( \alpha \) respectively.  It follows that if \(
 
 Under a truth assignment \( u \in \mathcal{B}^Q \), the interpretation \( I_u \)
 maps a proposition to the boolean algebra, defined as follows: \( (\rm i) \) \(
-I_u(c) = c \), where \( c \) is either \( 0 \) or \( 1 \), \( (\rm ii) \) \(
-I_u(q_i) = u(q_i) \), and the interpretation for each logical connective is
+I_u(c) = c \), where \( c \) is either \( \bot \) or \( \perp \), \( (\rm ii) \)
+\( I_u(q_i) = u(q_i) \), and the interpretation for each logical connective is
 defined as usual. We write \( u \models \alpha \) if \( I_u(\alpha) = 1 \) and
 we abuse the notation to write \( u \models \{\alpha, \beta, .., \gamma \} \) if
 \( u \models \alpha \vee \beta \vee ..\vee \gamma \). Note that \( u \not\models
 \varnothing \) for any \( u \). By denoting \( \alpha[\beta/q_i] \), we
 substitute all occurrences of \( q_i \) in \( \alpha \) with \( \beta \). \(
 \alpha[\beta_i/q_i \ ...\ \beta_j/q_j] \) denotes the simultaneous substitution
-of those propositional variables \( q_i, ..., q_j \). 
+of those propositional variables \( q_i, ..., q_j \).
 
 Given \( \mathit{Var} \), a set of first-order variables ranged over by \( x_1,
 x_2, \cdots, x_n \) and \( \mathit{Pred} \), a set of predicates ranged over by
