@@ -3,11 +3,11 @@
 A SAT/validity checking problem of a quantified formula is decidable on
 structures such as WS1S and FOL of Presburger Arithmetic. Those decidable
 fragments of logics are widely used in various automated decision
-procedures\cite{KlaEtAl:Mona}.
+procedures \cite{KlaEtAl:Mona}.
 
 The structure enjoys decidability typically because it admits quantifier
 elimination. So-called "automatic structures", on the other hand, have another
-mechanism of deciding the quantified formulas on them\cite{}, where each element
+mechanism of deciding the quantified formulas on them \cite{}, where each element
 in the carrier set has a string representation and each predicate has a
 dedicated automaton which serves as an interpreter. Moreover the string
 representation and automaton construction are devised in a way that the regular
@@ -29,7 +29,7 @@ constructions. It also makes the acceptance condition counter-intuitive.
 
 \todo{Existing works handle the problem?}
 \todo{more in detail} Antichain WS1S \cite{Fiedor2015,Fiedor2017}
-\todo{more in detail} Syntactical approach\cite{Traytel15,TraytelN15}
+\todo{more in detail} Syntactical approach \cite{Traytel15,TraytelN15}
 In the AFA setting, propositions symbolically represent reachable states and
 their acceptance follows a truth valuation. The determinization is directly
 expressed by a sequence of `or' symbols. Expressed by logical connectives, the
@@ -43,14 +43,13 @@ proceeds. As a result, instead of maintaining reachable states we only keep a
 set of propositions pairwise incomparable by implication to judge the language
 emptiness.
 
-\todo{What's new in our work?}
-To handle formula not limited to prefix normal form, we extend the antichain
-algorithm from\cite{Wulf2006} to utilize implication as the pruning criteria. We
-list our contributions below.
+\todo{What's new in our work?}  To handle formula not limited to prefix normal
+form, we extend the antichain algorithm from \cite{Wulf2006} to utilize
+implication as the pruning criteria. We list our contributions below.
 
 \begin{itemize}
 \item Generalization of the antichain algorithm.
-\item Bisimulation upto congruence technique\cite{BonchiP13} as well.
+\item Bisimulation upto congruence technique \cite{BonchiP13} as well.
 \item \todo{An experiment with a randomly generated Presburger formulas}
 \item \todo{A performance improvement of the theorem proving technique}
 \end{itemize}
