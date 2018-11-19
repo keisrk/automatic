@@ -1,9 +1,75 @@
 (use-modules (automatic utils)
              (automatic proposition)
              (ice-9 match)
+             (rnrs lists)
+             (srfi srfi-42)
              (srfi srfi-64))
 
 (test-begin "proposition")
+(define assign
+  '(#(0 0 0)
+    #(1 0 0)
+    #(0 1 0)
+    #(1 1 0)
+    #(0 0 1)
+    #(1 0 1)
+    #(0 1 1)
+    #(1 1 1)))
+
+(define dnfs
+  '((#( 1  1  0)#( 0  1 #f)#( 1  0 #f))
+    (#( 0 #f  1)#(#f  1  0)#(#f  0 #f))
+    (#(1  #f  0)#( 0  1  1)#(#f  0 #f))
+    (#(#f 1  #f)#( 1 #f  1)#( 0  1  1)#( 0 #f 0)#( 1  1 #f))
+    (#(#f 0  #f)#( 0 #f #f)#( 0  1  1)#( 0 0  #f))))
+
+(define dnf-and-brnf   (map (lambda (dnf) (cons dnf (dnf->brnf dnf))) dnfs))
+(define dnf-and-negdnf (map (lambda (dnf) (cons dnf (dnf-negation-wrt 3 dnf))) dnfs))
+(define dnf-and-conjdnf (map (lambda (dnf) (cons dnf (dnf-conjunction dnf dnf))) dnfs))
+
+(display"assignment")(newline)
+(do-ec (: d-n-b dnf-and-brnf)
+       (:let dnf (car d-n-b))
+       (:let brnf (cdr d-n-b))
+       (: asg assign)
+       (format #t "~a" (cons (dnf-eval dnf asg) (brnf-eval brnf asg))))
+
+(test-assert "assign"
+             (for-all (lambda (result) result)
+                      (list-ec (: d-n-b dnf-and-brnf)
+                               (:let dnf (car d-n-b))
+                               (:let brnf (cdr d-n-b))
+                               (for-all (lambda (asg) (equal? (dnf-eval dnf asg) (brnf-eval brnf asg))) assign))))
+
+(display"negation")(newline)
+(do-ec (: d-n-nd dnf-and-negdnf)
+       (:let dnf (car d-n-nd))
+       (:let ndnf (cdr d-n-nd))
+       (: asg assign)
+       (format #t "~a\n" (cons (dnf-eval dnf asg) (dnf-eval ndnf asg))))
+
+(test-assert "negation"
+             (for-all (lambda (result) result)
+                      (list-ec (: d-n-nd dnf-and-negdnf)
+                               (:let dnf (car d-n-nd))
+                               (:let ndnf (cdr d-n-nd))
+                               (for-all (lambda (asg) (equal? (dnf-eval dnf asg) (not (dnf-eval ndnf asg)))) assign))))
+
+(display"conjunction")(newline)
+(do-ec (: d-n-cjdnf dnf-and-conjdnf)
+       (:let dnf (car d-n-cjdnf))
+       (:let cjd (cdr d-n-cjdnf))
+       (: asg assign)
+       (format #t "~a\n" (cons (dnf-eval dnf asg) (dnf-eval cjd asg))))
+
+(test-assert "conjunction"
+             (for-all (lambda (result) result)
+                      (list-ec (: d-n-cjdnf dnf-and-conjdnf)
+                               (:let dnf (car d-n-cjdnf))
+                               (:let cjd (cdr d-n-cjdnf))
+                               (for-all (lambda (asg) (equal? (dnf-eval dnf asg) (dnf-eval cjd asg))) assign))))
+
+
 (test-equal "make-cls" (make-cls 3) #(#f #f #f))
 (test-equal "make-singleton-cls" (make-singleton-cls 3 1 1) #(#f 1 #f))
 

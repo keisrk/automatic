@@ -1,0 +1,5 @@
+# ninja log v5
+1	127	0	src/main.byte	2d305405cfc9ad88
+0	60	0	src/main.byte	2d305405cfc9ad88
+1	129	0	test/test.byte	4ae51189da5d43a6
+0	14	0	clean	2819d4bd923f0f04

@@ -1,0 +1,26 @@
+# Define variables.
+root = .
+ocb = ocamlbuild -tag bin_annot
+ocbclean = ocamlbuild -clean
+
+# Define rules.
+rule clean
+  command = ${ocbclean}
+  description = OCamlBuild clean command
+
+rule ocaml
+  command = ${ocb} ${out}
+  description = OCamlBuild takes input ${in} and outputs ${out}. `_tag` $
+      file must be present. 
+
+# Define build targets.
+build src/main.byte: ocaml
+
+build test/test.byte: ocaml
+
+build all: phony src/main.byte test/test.byte
+
+build clean: clean
+
+# Define the default target.
+default all

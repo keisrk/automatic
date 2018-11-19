@@ -62,7 +62,7 @@
    (lambda (i acc lit asg)
      (match lit
             (#f acc)
-            (_ (and (iff lit asg) acc))))
+            (_ (and (equal? lit asg) acc))))
    #t cls assign))
 
 (define (dnf-eval dnf assign)
@@ -115,12 +115,19 @@
 
 (define (lit-conjunction lit lit')
   ;; lit /\ lit'
+  ;; x0 /\ -x0 => BTM
   (match (cons lit lit')
          ((#f . _) lit')
          ((_ . #f) lit)
-         ((0 . _) 0)
-         ((_ . 0) 0)
+         ((0 . 0) 0)
+         ((0 . 1) 'BTM)
+         ((1 . 0) 'BTM)
          ((1 . 1) 1)))
+
+(define (cls-conjunction cls cls')
+  (let ((cls'' (vector-map (lambda (i lit lit') (lit-conjunction lit lit')) cls cls'))
+        (btm?  (lambda (x) (equal? x 'BTM))))
+    (if (vector-any btm? cls'') #f cls'')))
 
 (define (s-cls< cls cls')
   ;; lex order over cls
@@ -163,7 +170,9 @@
   (fold-ec #nil
            (: cls dnf)
            (: cls' dnf')
-           (vector-map (lambda (i lit lit') (lit-conjunction lit lit')) cls cls')
+           (:let cls'' (cls-conjunction cls cls'))
+           (if cls'')
+           cls''
            cls-dnf-union))
 
 (define (dnf-negation-wrt vars dnf)
@@ -227,7 +236,7 @@
   (receive (same brnf')
            (partition (lambda (x) (equal? x term)) brnf)
            (if (null? same) (insert term< term brnf')
-               brnf')))
+               (if (null? brnf') #nil brnf'))))
 
 (define (brnf-multiplication brnf brnf')
   ;; brnf * brnf'
@@ -243,6 +252,7 @@
 (define (brnf-xor brnf brnf')
   ;; brnf + brnf'
   (match (cons brnf brnf')
+         ((#nil . #nil) #nil)
          ((#nil . _) brnf')
          ((_ . #nil) brnf)
          (_ (fold term-brnf-xor brnf brnf'))))

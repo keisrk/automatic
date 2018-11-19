@@ -271,11 +271,11 @@
   (let-keywords
    arg #f
    (;; Canvas setting
-    (width  250)
-    (height 250)
+    (width  170)
+    (height 170)
     (radius 50)
     (font-size 10)
-    (span 10)
+    (span 8)
     ;; Color setting
     (bg-color 'white)
     (fill-color cyan)
