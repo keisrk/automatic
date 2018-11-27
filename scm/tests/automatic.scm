@@ -14,7 +14,7 @@
 (define sigma        (equation->sigma    equation))
 (define st8-dlt      (equation->st8-dlt  equation))
 (define init-fin     (equation->init-fin equation))
-(call-with-output-file "examples/dfa.dot"
+(call-with-output-file "resources/dfa.dot"
   (lambda (port)
     (format-graph port (car init-fin) (cdr init-fin) (car st8-dlt) (dlt-collect (cdr st8-dlt)) dfa-preamble)))
 
@@ -45,11 +45,11 @@
 (display "##afa-reachable-dlt\n")
 (for-each (lambda (x) (format #t "~a\n" x)) afa-reachable-dlt)
 
-(call-with-output-file "examples/afa.dot"
+(call-with-output-file "resources/afa.dot"
   (lambda (port)
     (format-graph port 'init 'final (car afa-st8-dlt) afa-reachable-dlt afa-preamble)))
 (do-ec (: brnf (car afa-st8-dlt))
        (draw-diagram
-        (list #:filename (string-append "examples/" (brnf->string brnf)) #:brnf brnf #:vars (vector-length (cdar be-st8)))))
+        (list #:filename (string-append "resources/" (brnf->string brnf)) #:brnf brnf #:vars (vector-length (cdar be-st8)))))
 
 (test-end)
