@@ -39,17 +39,41 @@ $ auto dfa --equation \"(((x . -1) (y .  2)) . 1)\"
 
 (define (make-dot kind equation output)
   "Construct FA out of equation and write in dot format"
-  (let ((sigma        (equation->sigma    equation))
-        (st8-dlt      (equation->st8-dlt  equation))
-        (init-fin     (equation->init-fin equation)))
-    (call-with-output-file output
-      (lambda (port)
-        (format-graph port
-                      (car init-fin)
-                      (cdr init-fin)
-                      (car st8-dlt)
-                      (dlt-collect (cdr st8-dlt))
-                      dfa-preamble)))))
+  (let* ((afa-flag     (equal? kind "afa"))
+         (sigma        (equation->sigma    equation))
+         (st8-dlt      (equation->st8-dlt  equation))
+         (init-fin     (equation->init-fin equation))
+         ;; AFA specific
+         (be-st8       (if afa-flag (bin-enc-st8 (car st8-dlt) (car init-fin))))
+         (be-init      (if afa-flag (assoc-ref be-st8 (car init-fin))))
+         (be-final     (if afa-flag (assoc-ref be-st8 (cdr init-fin))))
+         (be-dlt       (if afa-flag (bin-enc-dlt be-st8 (cdr st8-dlt))))
+         (dlt-noninit  (if afa-flag (make-afa-dlt-noninit be-dlt be-st8)))
+         (dlt-init     (if afa-flag (make-afa-dlt-init 'init dlt-noninit `(,be-final) sigma)))
+         (afa-dlt      (if afa-flag (append dlt-noninit dlt-init)))
+         (afa-brnf-dlt (if afa-flag (afa-dlt->afa-brnf-dlt afa-dlt)))
+         (afa-st8-dlt  (if afa-flag (afa->st8-dlt sigma afa-brnf-dlt 'init)))
+         (afa-reachable-dlt (if afa-flag (dlt-collect (cdr afa-st8-dlt)))))
+
+    (if afa-flag
+        ;; Handle AFA
+        (begin
+          (call-with-output-file output
+            (lambda (port)
+              (format-graph port 'init 'final (car afa-st8-dlt) afa-reachable-dlt afa-preamble)))
+          (do-ec (: brnf (car afa-st8-dlt))
+                 (draw-diagram
+                  (list #:filename (string-append "resources/" (brnf->string brnf)) #:brnf brnf #:vars (vector-length (cdar be-st8))))))
+
+        ;; Handle DFA
+        (call-with-output-file output
+          (lambda (port)
+            (format-graph port
+                          (car init-fin)
+                          (cdr init-fin)
+                          (car st8-dlt)
+                          (dlt-collect (cdr st8-dlt))
+                          dfa-preamble))))))
 
 (define (main args)
   "Entry point"

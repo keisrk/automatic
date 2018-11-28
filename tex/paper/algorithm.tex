@@ -1,4 +1,35 @@
 \section{Algorithm for checking language emptiness}
+
+\begin{example}
+  \( \forall x.\ \forall y.\ -2 x + 3y = 1 \Rightarrow (\exists z.\ x -3z = 1) \wedge (\exists z.\ y -2z = 1) \)
+  \begin{figure}
+    \caption{Equation \( -2 x + 3y = 1 \)}
+    \includegraphics[width=10cm]{images/eq5.png}
+  \end{figure}
+  \begin{figure}
+    \caption{Equation \( x -3z = 1 \) and \( \exists z.\ x -3z = 1 \)}
+    \includegraphics[width=8cm]{images/mod3is1_x.png}
+    \includegraphics[width=10cm]{images/proj_mod3is1_x.png}
+  \end{figure}
+  \begin{figure}
+    \caption{Equation \( y -2z = 1 \) and \( \exists z.\ y -2z = 1 \)}
+    \includegraphics[width=8cm]{images/odd_x.png}
+    \includegraphics[width=10cm]{images/proj_odd_x.png}
+  \end{figure}
+  \begin{figure}
+    \caption{AFA for \( -2 x + 3y = 1 \)}
+    \includegraphics[width=10cm]{images/afa_eq5.png}
+  \end{figure}
+  \begin{figure}
+    \caption{AFA for \( x -3z = 1 \)}
+    \includegraphics[width=10cm]{images/afa_mod3is1_x.png}
+  \end{figure}
+  \begin{figure}
+    \caption{AFA for \( y -2z = 1 \)}
+    \includegraphics[width=10cm]{images/afa_odd_x.png}
+  \end{figure}
+\end{example}
+\iffalse
 Given an \( \mathit{AFA}\) \( \mathcal{A} \), the \textit{emptiness} problem is
 to determine \( \mathcal{L}(\mathcal{A}) = \varnothing \).
 
@@ -66,3 +97,4 @@ We say \( \alpha \) and \( \beta \) are congruent if the language beginning from
     \mathcal{L}(\mathcal{A}) \neq \varnothing. \)
 \end{itemize}
 \end{theorem}
+\fi
