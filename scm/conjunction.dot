@@ -1,0 +1,60 @@
+digraph G {
+rankdir="LR";edge[fontname=Courier];
+node[shape=circle];
+"#entry#"[shape=none label=""];
+"({#f,0},{0,1})"[shape=doublecircle];
+"({#f,0},{#f,0,1})"[shape=doublecircle];
+"#entry#"->"({1},{1})"
+"({1},{1})"->"({#f,2},{#f})"[label="0\n0"];// Done
+"({1},{1})"->"({#f,2},{0,1})"[label="0\n1"];// Done
+"({1},{1})"->"({#f,0},{#f})"[label="1\n0"];// Done
+"({1},{1})"->"({#f,0},{0,1})"[label="1\n1"];// Done
+"({#f,2},{#f})"->"({#f,1},{#f})"[label="0 0\n0,1"];// Done
+"({#f,2},{#f})"->"({#f,2},{#f})"[label="1 1\n0,1"];// Done
+"({#f,2},{0,1})"->"({#f,1},{#f,0,1})"[label="0 0\n0,1"];// Done
+"({#f,2},{0,1})"->"({#f,2},{#f,0,1})"[label="1 1\n0,1"];// Done
+"({#f,0},{#f})"->"({#f,0},{#f})"[label="0 0\n0,1"];// Done
+"({#f,0},{#f})"->"({#f,1},{#f})"[label="1 1\n0,1"];// Done
+"({#f,0},{0,1})"->"({#f,0},{#f,0,1})"[label="0 0\n0,1"];// Done
+"({#f,0},{0,1})"->"({#f,1},{#f,0,1})"[label="1 1\n0,1"];// Done
+"({#f,1},{#f})"->"({#f,2},{#f})"[label="0 0\n0,1"];// Done
+"({#f,1},{#f})"->"({#f,0},{#f})"[label="1 1\n0,1"];// Done
+"({#f,1},{#f,0,1})"->"({#f,2},{#f,0,1})"[label="0 0\n0,1"];// Done
+"({#f,1},{#f,0,1})"->"({#f,0},{#f,0,1})"[label="1 1\n0,1"];// Done
+"({#f,2},{#f,0,1})"->"({#f,1},{#f,0,1})"[label="0 0\n0,1"];// Done
+"({#f,2},{#f,0,1})"->"({#f,2},{#f,0,1})"[label="1 1\n0,1"];// Done
+"({#f,0},{#f,0,1})"->"({#f,0},{#f,0,1})"[label="0 0\n0,1"];// Done
+"({#f,0},{#f,0,1})"->"({#f,1},{#f,0,1})"[label="1 1\n0,1"];// Done
+}
+
+// "1"->"#f"[label="0 0\n0,1"];
+/*
+digraph G {
+rankdir="LR";edge[fontname=Courier];
+node[shape=circle];
+"#entry#"[shape=none label=""];
+"{#f,0}"[shape=doublecircle];
+"#entry#"->"{1}"
+"{1}"->"{#f,2}"[label="0"];
+"{1}"->"{#f,0}"[label="1"];
+"{#f,0}"->"{#f,0}"[label="0"];
+"{#f,0}"->"{#f,1}"[label="1"];
+"{#f,2}"->"{#f,1}"[label="0"];
+"{#f,2}"->"{#f,2}"[label="1"];
+"{#f,1}"->"{#f,2}"[label="0"];
+"{#f,1}"->"{#f,0}"[label="1"];
+}
+digraph G {
+rankdir="LR";edge[fontname=Courier];
+node[shape=circle];
+"#entry#"[shape=none label=""];
+"{0,1}"[shape=doublecircle];
+"{#f,0,1}"[shape=doublecircle];
+"#entry#"->"{1}"
+"{1}"->"{#f}"[label="0"];
+"{1}"->"{0,1}"[label="1"];
+"{0,1}"->"{#f,0,1}"[label="0,1"];
+"{#f,0,1}"->"{#f,0,1}"[label="0,1"];
+"{#f}"->"{#f}"[label="0,1"];
+}
+*/
