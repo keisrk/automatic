@@ -1,0 +1,92 @@
+## Assume you are in automatic/scm/
+## The goal is -2x + 3y = 1 => 3mod1(x) and odd(y)
+## DFA for equation −2x + 3y = 1
+##
+./pre-inst-env examples/cli.scm dot        \
+    --kind dfa                             \
+    --equation "(((x . -2) (y . 3)) . 1)"  \
+    --output resources/eq_lhs.dot
+##
+## DFA for equation x − 3z = 1
+##
+./pre-inst-env examples/cli.scm dot        \
+    --kind dfa                             \
+    --equation "(((x . 1) (z . -3)) . 1)"  \
+    --output resources/mod3is1_x.dot
+##
+## DFA for equation y − 2z = 1
+##
+./pre-inst-env examples/cli.scm dot        \
+    --kind dfa                             \
+    --equation "(((y . 1) (z . -2)) . 1)"  \
+    --output resources/odd_y.dot
+##
+## AFA for equation −2x + 3y = 1
+##
+./pre-inst-env examples/cli.scm dot        \
+    --kind afa                             \
+    --equation "(((x . -2) (y . 3)) . 1)"  \
+    --output resources/afa_eq_lhs.dot
+##
+## AFA for equation x − 3z = 1
+##
+./pre-inst-env examples/cli.scm dot        \
+    --kind afa                             \
+    --equation "(((x . 1) (z . -3)) . 1)"  \
+    --output resources/afa_mod3is1_x.dot
+##
+## AFA for equation y − 2z = 1
+##
+./pre-inst-env examples/cli.scm dot        \
+    --kind afa                             \
+    --equation "(((y . 1) (z . -2)) . 1)"  \
+    --output resources/afa_odd_y.dot
+##
+## Prop for afa_proj_odd_y.dot, "(#(1 1)) \/ (#(1 0))"
+##
+./pre-inst-env examples/cli.scm prop       \
+    --op or                                \
+    --lhs "(#(1 1))"                       \
+    --rhs "(#(1 0))"                       \
+## >>> (#(1 0))
+##
+## Prop for afa_proj_odd_y.dot, "(#(1 1)) \/ (#(0 0) #(0 1) #(1 0))"
+##
+./pre-inst-env examples/cli.scm prop       \
+    --op or                                \
+    --lhs "(#(1 1))"                       \
+    --rhs "(#(0 0) #(0 1) #(1 0))"         \
+## >>> (#(0 0) #(0 1) #(1 0))
+##
+## Prop for afa_conj_proj_mod3is1_x_odd_y.dot, (#(0 1 0 0) #(1 1 0 0)) /\ (#(0 0 1 0) #(0 0 1 1))
+##
+./pre-inst-env examples/cli.scm prop       \
+    --op and                               \
+    --lhs "(#(0 1 0 0) #(1 1 0 0))"        \
+    --rhs "(#(0 0 1 0) #(0 0 1 1))"        \
+## >>> (#(0 1 1 0) #(0 1 1 1) #(1 1 1 0) #(1 1 1 1))
+##
+## Prop for afa_conj_proj_mod3is1_x_odd_y.dot, "(#(0 1 0 0) #(1 1 0 0)) /\ (#(0 0 0 0) #(0 0 0 1) #(0 0 1 0) #(0 0 1 1))"
+##
+./pre-inst-env examples/cli.scm prop       \
+    --op and                               \
+    --lhs "(#(0 1 0 0) #(1 1 0 0))"        \
+    --rhs "(#(0 0 0 0) #(0 0 0 1) #(0 0 1 0) #(0 0 1 1))"        \
+## >>> (#(0 1 0 0) #(0 1 0 1) #(0 1 1 0) #(0 1 1 1) #(1 1 0 0) #(1 1 0 1) #(1 1 1 0) #(1 1 1 1))
+##
+## Prop for afa_conj_proj_mod3is1_x_odd_y.dot, "(#(0 0 0 0) #(0 1 0 0) #(1 0 0 0) #(1 1 0 0)) /\ (#(0 0 1 0) #(0 0 1 1))"
+##
+./pre-inst-env examples/cli.scm prop       \
+    --op and                               \
+    --lhs "(#(0 0 0 0) #(0 1 0 0) #(1 0 0 0) #(1 1 0 0))"        \
+    --rhs "(#(0 0 1 0) #(0 0 1 1))"        \
+## >>> (#(0 0 1 0) #(0 0 1 1) #(0 1 1 0) #(0 1 1 1) #(1 0 1 0) #(1 0 1 1) #(1 1 1 0) #(1 1 1 1))
+##
+## Prop for afa_conj_proj_mod3is1_x_odd_y.dot, "(#(0 0 0 0) #(0 1 0 0) #(1 0 0 0) #(1 1 0 0)) /\ (#(0 0 0 0) #(0 0 0 1) #(0 0 1 0) #(0 0 1 1))"
+##
+./pre-inst-env examples/cli.scm prop       \
+    --op and                               \
+    --lhs "(#(0 0 0 0) #(0 1 0 0) #(1 0 0 0) #(1 1 0 0))"        \
+    --rhs "(#(0 0 0 0) #(0 0 0 1) #(0 0 1 0) #(0 0 1 1))"        \
+## >>> (#(0 0 0 0) #(0 0 0 1) #(0 0 1 0) #(0 0 1 1) #(0 1 0 0) #(0 1 0 1) #(0 1 1 0) #(0 1 1 1) #(1 0 0 0) #(1 0 0 1) #(1 0 1 0) #(1 0 1 1) #(1 1 0 0) #(1 1 0 1) #(1 1 1 0) #(1 1 1 1))
+

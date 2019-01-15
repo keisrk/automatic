@@ -1,0 +1,85 @@
+digraph G {
+rankdir="LR";edge[fontname=Courier, fontsize=25];
+node[shape=none, fontsize=25];
+m3_o4[image="0110+0111+1110+1111.png", label=""];
+m3_o1[image="0100+0101+0110+0111+1100+1101+1110+1111.png", label=""];
+m1_o4[image="0010+0011+0110+0111+1010+1011+1110+1111.png", label=""];
+m1_o1[image="0000+0001+0010+0011+0100+0101+0110+0111+1000+1001+1010+1011+1100+1101+1110+1111.png", label=""];
+m3_o3[image="0110+1110.png", label=""];
+m3_o2[image="0100+0101+0110+1100+1101+1110.png", label=""];
+m1_o3[image="0010+0110+1010+1110.png", label=""];
+m1_o2[image="0000+0001+0010+0100+0101+0110+1000+1001+1010+1100+1101+1110.png", label=""];
+m2_o4[image="1010+1011+1110+1111.png", label=""];
+m2_o1[image="1000+1001+1010+1011+1100+1101+1110+1111.png", label=""];
+m2_o3[image="1010+1110.png", label=""];
+m2_o2[image="1000+1001+1010+1100+1101+1110.png", label=""];
+
+"#entry#"[shape=none label=""];
+"#entry#"->init
+
+ init->m3_o4[label="0\n0"] // DONE
+ init->m3_o1[label="0\n1"] // DONE
+ init->m1_o4[label="1\n0"] // DONE
+ init->m1_o1[label="1\n1"] // DONE
+
+m3_o4->m3_o4[label="0\n0"] // DONE
+m3_o4->m3_o1[label="0\n1"] // DONE
+m3_o4->m1_o4[label="1\n0"] // DONE
+m3_o4->m1_o1[label="1\n1"] // DONE
+
+m3_o1->m3_o3[label="0\n0"] // DONE
+m3_o1->m3_o2[label="0\n1"] // DONE
+m3_o1->m1_o3[label="1\n0"] // DONE
+m3_o1->m1_o2[label="1\n1"] // DONE
+
+m1_o4->m2_o4[label="0\n0"] // DONE
+m1_o4->m2_o1[label="0\n1"] // DONE
+m1_o4->m3_o4[label="1\n0"] // DONE
+m1_o4->m3_o1[label="1\n1"] // DONE
+
+m1_o1->m2_o3[label="0\n0"] // DONE
+m1_o1->m2_o2[label="0\n1"] // DONE
+m1_o1->m3_o3[label="1\n0"] // DONE
+m1_o1->m3_o2[label="1\n1"] // DONE
+
+m3_o3->m3_o4[label="0\n0"] // DONE
+m3_o3->m3_o1[label="0\n1"] // DONE
+m3_o3->m1_o4[label="1\n0"] // DONE
+m3_o3->m1_o1[label="1\n1"] // DONE
+
+m3_o2->m3_o3[label="0\n0"] // DONE
+m3_o2->m3_o2[label="0\n1"] // DONE
+m3_o2->m1_o3[label="1\n0"] // DONE
+m3_o2->m1_o2[label="1\n1"] // DONE
+
+m1_o3->m2_o4[label="0\n0"] // DONE
+m1_o3->m2_o1[label="0\n1"] // DONE
+m1_o3->m3_o4[label="1\n0"] // DONE
+m1_o3->m3_o1[label="1\n1"] // DONE
+
+m1_o2->m2_o3[label="0\n0"] // DONE
+m1_o2->m2_o2[label="0\n1"] // DONE
+m1_o2->m3_o3[label="1\n0"] // DONE
+m1_o2->m3_o2[label="1\n1"] // DONE
+
+m2_o4->m1_o4[label="0\n0"] // DONE
+m2_o4->m1_o1[label="0\n1"] // DONE
+m2_o4->m2_o4[label="1\n0"] // DONE
+m2_o4->m2_o1[label="1\n1"] // DONE
+
+m2_o1->m1_o3[label="0\n0"] // DONE
+m2_o1->m1_o2[label="0\n1"] // DONE
+m2_o1->m2_o3[label="1\n0"] // DONE
+m2_o1->m2_o2[label="1\n1"] // DONE
+
+m2_o3->m1_o4[label="0\n0"] // DONE
+m2_o3->m1_o1[label="0\n1"] // DONE
+m2_o3->m2_o4[label="1\n0"] // DONE
+m2_o3->m2_o1[label="1\n1"] // DONE
+
+m2_o2->m1_o3[label="0\n0"] // DONE
+m2_o2->m1_o2[label="0\n1"] // DONE
+m2_o2->m2_o3[label="1\n0"] // DONE
+m2_o2->m2_o2[label="1\n1"] // DONE
+
+}

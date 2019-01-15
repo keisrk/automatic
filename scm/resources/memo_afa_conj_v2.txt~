@@ -1,0 +1,23 @@
+m3_o4->m3_o4[label=00] // DONE
+
+m3_o1->m3_o3[label=00] // DONE
+
+m1_o4->m2_o4[label=00] // DONE
+
+m1_o1->m2_o3[label=00] // DONE
+
+m3_o3->m3_o4[label=00] // DONE
+
+m3_o2->m3_o3[label=00] // DONE
+
+m1_o3->m2_o4[label=00] // DONE
+
+m1_o2->m2_o3[label=00] // DONE
+
+m2_o4->m1_o4[label=00] // DONE
+
+m2_o1->m1_o3[label=00] // DONE
+
+m2_o3->m1_o4[label=00] // DONE
+
+m2_o2->m1_o3[label=00] // DONE

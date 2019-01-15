@@ -1,0 +1,9 @@
+digraph G {
+rankdir="LR";edge[fontname=Courier];
+node[shape=circle];
+"#entry#"[shape=none label=""];
+"0"[shape=doublecircle];
+"#entry#"->"1"
+"1"->"#f"[label=""];
+"#f"->"#f"[label=""];
+}
