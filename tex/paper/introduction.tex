@@ -36,8 +36,8 @@ expressed by a sequence of `or' symbols. Expressed by logical connectives, the
 complex structure in DFA is handled in a unified manner. The antichain algorithm
 which maintains the equisatisfiability is a practically efficient method to
 prune the reachable states. AFA naturally allows the equisatisfiable
-transformation similar to the antichain algorithm. For each subformula of a
-proposition we replace it with another subformula in the set if they are ordered
+transformation similar to the antichain algorithm. For each sub-formula of a
+proposition we replace it with another sub-formula in the set if they are ordered
 by implication. This operation is conducted at the same time the construction
 proceeds. As a result, instead of maintaining reachable states we only keep a
 set of propositions pairwise incomparable by implication to judge the language
@@ -49,7 +49,7 @@ implication as the pruning criteria. We list our contributions below.
 
 \begin{itemize}
 \item Generalization of the antichain algorithm.
-\item Bisimulation upto congruence technique \cite{BonchiP13} as well.
+\item Bisimulation up to congruence technique \cite{BonchiP13} as well.
 \item \todo{An experiment with a randomly generated Presburger formulas}
 \item \todo{A performance improvement of the theorem proving technique}
 \end{itemize}

@@ -9,6 +9,11 @@ Alternating Finite Automata for Deciding Presburger Arithmetic
 
 .. default-role:: math
 
+.. Copy & Paste Work
+   docs/notebook/src/i513/trs_48.org
+   docs/notebook/src/i513/tseitin.org
+   externalfile:drive-f17f12fadca928148afe7b3620738e10fd62afc6/root/misc/0822_dentrance_exam.pdf
+
 Introduction
 =============================
 
@@ -18,13 +23,21 @@ Automata-based Decision Procedure for Presburger Arithmetic
 decision procedure.}`
 
 Problem
-  On input a Presburger Arithmetic formula, check SAT/validity.
+  On input a Presburger Arithmetic formula, check SAT.
 
 Procedure
   (Boudet, Comon)
 
   #. Regular set as solution space
   #. Check language emptiness
+
+.. raw:: latex
+
+   \begin{theorem}[Boudet, Comon]
+       The automaton algorithm decides Presburger arithmetic in triple 
+       exponential time.
+   \end{theorem}
+
 
 Optimized Methods for Automata-based Decision Procedure
 --------------------------------------------------------------------
@@ -34,11 +47,11 @@ Optimized Methods for Automata-based Decision Procedure
 
    TODO
 
-.. admonition:: Antichain algorithm
+.. admonition:: Antichain algorithm (Wulf et al.)
 
    TODO
 
-.. admonition:: Bisimulation up to congruence
+.. admonition:: Bisimulation up to congruenceo (Bonchi, Pous)
 
    TODO
 
@@ -46,7 +59,7 @@ Topics
 -----------------------------
 
 Problem
-  SAT/validity checking of Presburger Arithmetic
+  SAT checking of Presburger Arithmetic
 
 Procedure
   Automata construction followed by emptiness checking
@@ -64,7 +77,7 @@ Aim
 
 .. admonition:: Contribution
 
-   - Alternating Finite Automaton(AFA)
+   - Alternating Finite Automaton (AFA)
    - SAT encoding
 
 Related Works
@@ -90,7 +103,8 @@ Preliminaries
 Presburger Arithmetic
 -----------------------------
 :raw:`\todo{Define PA}`  
-`\forall x \ldotp` and `\exists y \ldotp`.
+
+.. Comment `\forall x \ldotp` and `\exists y \ldotp`.
 
 .. raw:: latex
 
@@ -138,29 +152,31 @@ Antichain Algorithm
 
 .. raw:: latex
 
-   \( \subseteq \)
+   \( \{1, 2, 3,\ \}, \{1, \ , 3, 4 \} and \{1, 2, 3, 4\} \)
 
-.. image:: images/nano.pdf
+.. image:: images/nfa_example.jpg
+
 
 Bisimulation up to Congruence
 -----------------------------
 
 .. raw:: latex
 
-   \( \cong \)
+   \( \{1, \ , 3,\ \}, \{1, 2, 3,\ \}, \{1, \ , 3, 4 \} and \{1, 2, 3, 
+   4\} \)
 
-.. image:: images/nano.pdf
+.. image:: images/nfa_example.jpg
 
 AFA-based Decision Procedure
 =====================================================================
 
 Alternating Finite Automaton
 --------------------------------------------------------------------
-:raw:`todo{Define AFA and explain/demonstrate NFA equivalence.}`
+:raw:`\todo{Define AFA and explain/demonstrate NFA equivalence.}`
 
 NFA to AFA Translation
 -----------------------------
-:raw:`todo{Explain/demonstrate AFA translation.}`
+:raw:`\todo{Explain/demonstrate AFA translation.}`
 
 AC in AFA
 -----------------------------

@@ -1,0 +1,14 @@
+# Tectonic does not offer a path for local tex package installation. To use
+# llncs style everytime we need to make a symlink to it.
+tex_package_dir = /home/kei/tex_projects/llncs2e
+rule symlink
+  command = ln -s $in $out
+  description = Make symbolic link to $in.
+build llncs.cls: symlink $tex_package_dir/llncs.cls
+# Dependencies are automatically downloaded. We see no intermediate files
+# `.log', `.aux' and so on.
+rule tectonic
+  command = tectonic $in
+  description = Compile tex into pdf.
+build paper.pdf: tectonic paper.tex | llncs.cls algorithm.tex alter.tex $
+    encoding.tex introduction.tex prelim.tex reference.bib

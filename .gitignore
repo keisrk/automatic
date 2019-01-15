@@ -17,3 +17,6 @@ scm/build-aux/
 scm/resources/*
 
 ml/_build
+
+rs/automatic/target
+rs/automatic/Cargo.lock
