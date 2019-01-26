@@ -107,7 +107,13 @@ $ auto dot --equation \"(((x . -1) (y .  2)) . 1)\"
 
 (define (make-prop op lhs rhs)
   ;; 
-  (match op
-    ("and" (display (brnf-multiplication lhs rhs)))
-    ("or"  (display (brnf-disjunction    lhs rhs)))
-  ))
+  (let ((brnf 
+          (match op
+            ("and" (brnf-multiplication lhs rhs))
+            ("or"  (brnf-disjunction    lhs rhs)))))
+    (begin 
+      (draw-diagram
+        (list #:filename (string-append "resources/big/" (brnf->string brnf)) 
+              #:brnf brnf 
+              #:vars (vector-length (car brnf))))
+      (display (brnf->string brnf)))))

@@ -16,26 +16,6 @@ from ninja_model import write_models
 
 IMAGES_DIR = 'images'
 
-rsvg = {
-    'comment': """\
-Convert svg file to pdf. Images are located in `images' dir.\
-""",
-    'variable': {
-        'rsvg_args': ['-f', 'pdf'],
-        'images_dir': IMAGES_DIR
-    },
-    'rule': {
-        'name': 'rsvg',
-        'command': 'rsvg-convert $rsvg_args -o $out $in',
-        'description': 'Convert svg to pdf.',
-    },
-    'builds': [{
-        'rule': 'rsvg',
-        'outputs': '$images_dir/{}.pdf'.format(image),
-        'inputs': '$images_dir/{}.svg'.format(image),
-    } for image in ['nano', 'micro']]
-}
-
 r2b = {
     'comment': """\
 Convert restructuredtext to latex beamer. Doctutils offers stylesheet 
@@ -74,10 +54,10 @@ Dependencies are automatically downloaded. We see no intermediate files
         'rule': 'tectonic',
         'outputs': 'slide.pdf',
         'inputs': 'slide.tex',
-        'implicit': '$images_dir/nano.pdf'
+        'implicit': None,
     }]
 }
 
 if __name__ == "__main__":
-    write_models(rsvg, r2b, tectonic)
+    write_models(r2b, tectonic)
     logging.info('Wrote build file')

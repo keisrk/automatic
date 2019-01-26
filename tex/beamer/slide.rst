@@ -19,17 +19,20 @@ Introduction
 
 Automata-based Decision Procedure for Presburger Arithmetic
 --------------------------------------------------------------------
-:raw:`\todo{State problem specification and introduce automata-based 
-decision procedure.}`
 
-Problem
-  On input a Presburger Arithmetic formula, check SAT.
+SAT Problem
+  (in Presburger Arithmetic) : Given a FOL formula  `\varphi`, answers `(\mathbb{N}; + ; =) \models \varphi` or not.
 
 Procedure
   (Boudet, Comon)
 
-  #. Regular set as solution space
-  #. Check language emptiness
+   Construct the automaton \( \mathcal{A}_\varphi \) serving as the interpreter of \( \varphi \), .i.e, \( \mathcal{L}(\mathcal{A}_\varphi) \) contains all the solutions of \( \varphi \).
+
+   - `\mathcal{A}_{\varphi}` accepts the solution of an atomic formula \( \varphi \).
+   - `\mathcal{A}_{\varphi_1 \wedge \varphi_2}` accepts \( \mathcal{L}(\mathcal{A}_{\varphi_1}) \cap \mathcal{L}(\mathcal{A}_{\varphi_2}) \).
+   - `\mathcal{A}_{\varphi_1 \vee \varphi_2}` accepts \( \mathcal{L}(\mathcal{A}_{\varphi_1}) \cup \mathcal{L}(\mathcal{A}_{\varphi_2}) \).
+   - `\mathcal{A}_{\neg \varphi}` accepts the complement of \( \mathcal{L}(\mathcal{A}_{\varphi}) \).
+   - `\mathcal{A}_{\exists x_i .\ \varphi}` accepts the \( i \)-th projection of \( \mathcal{L}(\mathcal{A}_{\varphi}) \).
 
 .. raw:: latex
 
@@ -219,12 +222,6 @@ Example (SAT Encoding)
 Conclusion 
 =============================
 
-Evaluation
------------------------------
-:raw:`\todo{Evaluate experimental result}`
-
-Nothing to evaluate.
-
 Conclusion
 -----------------------------
 :raw:`\todo{Conclude contribution of this work}`
@@ -239,9 +236,9 @@ Procedure
 
 .. admonition:: Comparison of techniques
 
-   - Antichain Algorithm: Check `\mathcal{L}(\mathcal{A}) = \Sigma^*`
-   - Bisimulation up to Congruence: `\mathcal{L}(\mathcal{A}) = \mathcal{L}(\mathcal{B})`
-   - **AFA-based technique**: `\mathcal{L}(\mathcal{A}) = \varnothing`
+   - Antichain Algorithm: Check `L(A) = \Sigma^*`
+   - Bisimulation up to Congruence: `L(A) = L(B)`
+   - **AFA-based technique**: `L(A) = \varnothing`
 
 Future work
 -----------------------------

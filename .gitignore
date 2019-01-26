@@ -14,7 +14,6 @@ scm/Makefile
 scm/Makefile.in
 scm/pre-inst-env
 scm/build-aux/
-scm/resources/*
 
 ml/_build
 

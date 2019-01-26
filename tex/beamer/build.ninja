@@ -1,11 +1,3 @@
-# Convert svg file to pdf. Images are located in `images' dir.
-images_dir = images
-rsvg_args = -f pdf
-rule rsvg
-  command = rsvg-convert $rsvg_args -o $out $in
-  description = Convert svg to pdf.
-build $images_dir/nano.pdf: rsvg $images_dir/nano.svg
-build $images_dir/micro.pdf: rsvg $images_dir/micro.svg
 # Convert restructuredtext to latex beamer. Doctutils offers stylesheet  and
 # theme configuration through arguments.
 r2b_args = --stylesheet my_beamer --theme metropolis
@@ -18,4 +10,4 @@ build slide.tex: r2b slide.rst | my_beamer.sty
 rule tectonic
   command = tectonic $in
   description = Compile tex into pdf.
-build slide.pdf: tectonic slide.tex | $images_dir/nano.pdf
+build slide.pdf: tectonic slide.tex

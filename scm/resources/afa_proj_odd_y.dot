@@ -1,6 +1,8 @@
 digraph G {
 fontsize = 18;
-rankdir="LR";node[shape=none];
+rankdir="LR";
+node[shape=none, fontsize=25];
+edge[fontsize=25];
 "#entry#"[shape=none label=""];
 "(#(0 0) #(0 1) #(1 0))"[image="00+01+10.png", label=""];
 "(#(1 0))"[image="10.png", label=""];

@@ -1,5 +1,7 @@
 digraph G {
-rankdir="LR";node[shape=none];
+rankdir="LR";
+node[shape=none, fontsize=25];
+edge[fontsize=25];
 "#entry#"[shape=none label=""];
 "(#(1 0) #(1 1))"[image="10+11.png", label=""];
 "(#(0 0) #(0 1) #(1 0) #(1 1))"[image="00+01+10+11.png", label=""];
