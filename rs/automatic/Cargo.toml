@@ -1,11 +1,16 @@
 [package]
 name = "automatic"
 version = "0.1.0"
-authors = ["ksh <kei.shirakizawa@gmail.com>"]
+
+authors = ["Kei Shirakizawa <kei.shirakizawa@gmail.com>"]
 
 [dependencies]
 clap = "2.32.0"
 env_logger = "0.5.13"
 failure = "0.1.1"
+itertools = "0.8.0"
 log = "0.4.0"
-varisat = { "path" = "../../../rust_projects/varisat/varisat" }
+serde = "1.0.83"
+serde_derive = "1.0.83"
+ron = "0.4.0"
+varisat = { git = "https://gitlab.com/jix/varisat.git", branch = "dev" }

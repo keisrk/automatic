@@ -1,20 +1,37 @@
 \section{Algorithm for checking language emptiness}
 
 \begin{example}
-  \( \forall x.\ \forall y.\ -2 x + 3y = 1 \Rightarrow (\exists z.\ x -3z = 1) \wedge (\exists z.\ y -2z = 1) \)
+  \[ \forall x.\ \forall y.\ -2 x + 3y = 1 \Rightarrow (\exists z.\ x -3z = 1) \wedge (\exists z.\ y -2z = 1) \]
+
+  \paragraph{Linear equation to DFA} By standard method. Figures 1, 2 and 3.
+  \paragraph{projection} We perform projection over DFA to express \( \exists \). Fig 2, 3
+  \paragraph{cylindrification and product construction}
+  We fist perform cylindrification. Cylindrify 2nd character for \( \exists z.\ x -3z = 1
+  \) and 1st character for \( \exists z.\ y -2z = 1 \). Secondly we perform
+  product construction. Fig 4. By comparing the figures, we can see the language of \(
+  -2 x + 3y = 1 \) is contained by that of \( \exists z.\ x -3z = 1 \wedge
+  \exists z.\ y -2z = 1 \). Thus implication `\( \Rightarrow \)' holds.
+
   \begin{figure}
+    \label{left}
     \caption{Equation \( -2 x + 3y = 1 \)}
     \includegraphics[width=10cm]{images/eq5.png}
   \end{figure}
   \begin{figure}
+    \label{rightleft}
     \caption{Equation \( x -3z = 1 \) and \( \exists z.\ x -3z = 1 \)}
     \includegraphics[width=8cm]{images/mod3is1_x.png}
     \includegraphics[width=10cm]{images/proj_mod3is1_x.png}
   \end{figure}
   \begin{figure}
+    \label{rightright}
     \caption{Equation \( y -2z = 1 \) and \( \exists z.\ y -2z = 1 \)}
     \includegraphics[width=8cm]{images/odd_x.png}
     \includegraphics[width=10cm]{images/proj_odd_x.png}
+  \end{figure}
+  \begin{figure}
+    \caption{DFA for \( \exists z.\ x -3z = 1 \wedge \exists z.\ y -2z = 1 \)}
+    \includegraphics[width=12cm]{images/conjunction.png}
   \end{figure}
   \begin{figure}
     \caption{AFA for \( -2 x + 3y = 1 \)}

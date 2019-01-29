@@ -35,6 +35,8 @@
             brnf-multiplication
             brnf-xor
             substitution
+            brnf-disjunction
+            brnf-negation-wrt
 
             ;; Methods for DNF -> BRNF conversion
             cls->brnf
@@ -66,7 +68,7 @@
    #t cls assign))
 
 (define (dnf-eval dnf assign)
-  ""
+  " "
   (fold
    (lambda (cls acc) (or acc (cls-eval cls assign)))
    #f
@@ -82,7 +84,7 @@
    #t term assign))
 
 (define (brnf-eval brnf assign)
-  ""
+  " "
   (fold
    (lambda (term acc) (xor acc (term-eval term assign)))
    #f
@@ -273,6 +275,14 @@
   ;;
   (fold (lambda (term acc) (brnf-xor (term-substitution term sigma) acc)) #nil brnf))
 
+(define (brnf-disjunction brnf brnf') 
+  ;; x \/ y = x + y + xy
+  (brnf-xor (brnf-xor brnf brnf') (brnf-multiplication brnf brnf')))
+
+(define (brnf-negation-wrt vars brnf) 
+  ;; -x = 1 + x
+  (brnf-xor (make-brnf vars) brnf))
+
 ;; Methods for DNF -> BRNF conversion
 
 (define (l-cls->l-brnf l-cls)
@@ -293,8 +303,22 @@
 (define (dnf->brnf dnf)
   ;;
   (match dnf
-         (#nil #nil)
+         (#nil #nil) ;; 0 \/ _
          ((cls . dnf') (let* ((brnf-l (cls->brnf cls))
                               (brnf-r (dnf->brnf dnf'))
                               (brnf-c (brnf-multiplication brnf-l brnf-r)))
                          (brnf-xor (brnf-xor brnf-l brnf-r) brnf-c)))))
+
+(define (term->cls term)
+  ;; 1 -> 1
+  ;; 0 -> #f
+  (vector-map (lambda (i var) (if (equal var 1) 1 #f)) term))
+
+(define (brnf->dnf brnf)
+  ;; 
+  (match brnf
+         (#nil #nil) ;; 0 + _
+         ((term . brnf') (let ((vars (vector-length term))
+                               (cls (term->cls term))
+                               (dnf (brnf->dnf brnf')))
+                           ((list cls))))))

@@ -177,6 +177,7 @@ returns sufficient number of binarys to cover the index range, i.e.
 
 (define (afa-preamble port init final st8)
   "preamble for AFA, required by (automatic graph)."
+  (format port "edge[fontsize=25];~&")
   (format port "node[shape=none];~&")
   (format port "\"#entry#\"[shape=none label=\"\"];~&")
   (do-ec (: q st8)

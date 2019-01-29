@@ -1,0 +1,13 @@
+# Convert restructuredtext to latex beamer. Doctutils offers stylesheet  and
+# theme configuration through arguments.
+r2b_args = --stylesheet my_beamer --theme metropolis
+rule r2b
+  command = rst2beamer $r2b_args $in $out
+  description = Convert restructuredtext into latex.
+build slide.tex: r2b slide.rst | my_beamer.sty
+# Dependencies are automatically downloaded. We see no intermediate files
+# `.log', `.aux' and so on.
+rule tectonic
+  command = tectonic $in
+  description = Compile tex into pdf.
+build slide.pdf: tectonic slide.tex

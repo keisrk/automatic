@@ -18,6 +18,4 @@ fn main() {
         solver.solve();
         info!("{}", "solved");
     }
-
-    println!("Hello, world!");
 }

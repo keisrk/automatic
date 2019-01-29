@@ -1,0 +1,1 @@
+/home/kei/tex_projects/llncs2e/llncs.cls

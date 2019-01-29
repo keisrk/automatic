@@ -1,0 +1,8 @@
+./pre-inst-env examples/automatic.scm dfa -e "(((x . -1) (y .  2)) . 1)" -o resources/eq0.dot 
+./pre-inst-env examples/automatic.scm dfa -e "(((x .  1) (y . -3)) . 3)" -o resources/eq1.dot
+./pre-inst-env examples/automatic.scm dfa -e "(((x . -4) (y .  1)) . 1)" -o resources/eq2.dot
+./pre-inst-env examples/automatic.scm dfa -e "(((x . -2) (y .  1)) . 1)" -o resources/eq4.dot
+./pre-inst-env examples/automatic.scm dfa -e "(((x . -2) (y .  3)) . 1)" -o resources/eq5.dot 
+
+./pre-inst-env examples/automatic.scm afa -e "(((x . -2) (y .  3)) . 1)" -o resources/afa_eq5.dot 
+./pre-inst-env examples/automatic.scm afa -e "(((x . 1) (y .  -2)) . 1)" -o resources/afa_odd_x.dot 
